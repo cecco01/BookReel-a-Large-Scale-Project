@@ -52,7 +52,7 @@ with open(INPUT_FILE, "r", encoding="utf-8") as fin, \
 
         url = f"{BASE_URL}/{movie_id}"
         params = {
-            "language": "it-IT",
+            "language": "en-US",
             "append_to_response": "genres,production_companies"
         }
 
