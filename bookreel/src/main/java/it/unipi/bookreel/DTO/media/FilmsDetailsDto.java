@@ -20,3 +20,5 @@ public class FilmsDetailsDto extends MediaDetailsDto {
     @NotEmpty
     private List<String> studios;
 }
+
+//vedi se occorre aggiungere altri attributi specifici dei film

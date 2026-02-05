@@ -17,4 +17,4 @@ public class BooksCreationDto extends MediaCreationDto {
     private List<String> authors;
 }
 
-//nel caso mettere anche il genere
+//nel caso mettere anche il genere e altri sttributi specifici dei libri

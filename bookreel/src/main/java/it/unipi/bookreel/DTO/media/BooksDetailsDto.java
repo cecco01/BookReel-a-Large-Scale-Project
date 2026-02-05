@@ -12,3 +12,6 @@ public class BooksDetailsDto extends MediaDetailsDto {
 
     private List<String> authors;
 }
+
+
+//nel caso mettere anche il genere e altri sttributi specifici dei libri

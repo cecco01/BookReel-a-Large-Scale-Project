@@ -97,7 +97,7 @@ public class UserController {
     @PatchMapping("/user/lists/{mediaType}/{mediaId}")
     public ResponseEntity<String> modifyMediaInUserList(@PathVariable MediaType mediaType, @PathVariable String mediaId, @RequestBody MediaListUpdateDto progress) {
         UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok(userService.modifyMediaInUserList(user.getUser().getId(), mediaId, mediaType, progress.progress()));
+        return ResponseEntity.ok(userService.modifyMediaInUserList(user.getUser().getId(), mediaId, mediaType));
     }
 
     @DeleteMapping("/user/lists/{mediaType}/{mediaId}")
