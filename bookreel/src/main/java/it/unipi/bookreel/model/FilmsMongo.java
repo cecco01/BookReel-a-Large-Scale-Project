@@ -13,7 +13,7 @@ import java.util.List;
 public class FilmsMongo extends MediaMongo{
     @NotBlank
 
-    private String source;
+    private String director;
 
     private double duration;
 

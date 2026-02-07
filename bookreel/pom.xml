@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.30</version> <!-- use the latest version -->
+			<version>1.18.30</version> <!-- usa l'ultima versione -->
 		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>

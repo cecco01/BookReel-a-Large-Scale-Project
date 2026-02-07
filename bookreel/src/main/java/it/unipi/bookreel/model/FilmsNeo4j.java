@@ -10,7 +10,7 @@ import java.util.List;
 
 @Node("Films")
 @Data
-public class AnimeNeo4j {
+public class FilmsNeo4j {
 
     @Id
     private String id;

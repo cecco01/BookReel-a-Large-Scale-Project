@@ -19,8 +19,8 @@ public abstract class MediaMongo {
     @NotBlank
     private String name;
 
-    @NotBlank
-    private MediaStatus status;
+    //@NotBlank
+    //private MediaStatus status;
 
     @NotBlank
     private int sumScores = 0;
