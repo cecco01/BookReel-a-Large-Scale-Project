@@ -32,14 +32,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
-                .httpBasic(AbstractHttpConfigurer::disable) // Disable HTTP Basic authentication
-                .formLogin(AbstractHttpConfigurer::disable) // Disable form login
+        http.csrf(AbstractHttpConfigurer::disable) // Disabilita CSRF protection
+                .httpBasic(AbstractHttpConfigurer::disable) // Disabilita HTTP Basic authentication
+                .formLogin(AbstractHttpConfigurer::disable) // Disabilita form login
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api-docs.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/media/{mediaType:[a-zA-Z]+}", "/api/media/{mediaType:[a-zA-Z]+}/{mediaId:[a-zA-Z0-9\\-]+}").permitAll()
-                        .requestMatchers("/api/users").authenticated() // Only authenticated users can access this endpoint
+                        .requestMatchers("/api/users").authenticated() // Solo gli utenti autenticati possono accedere a questo endpoint
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().hasRole("USER"))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

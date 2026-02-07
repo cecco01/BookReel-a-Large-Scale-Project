@@ -16,10 +16,10 @@ import java.util.function.Function;
 
 public class JwtUtils {
     private static final String secretKey;
-    private static final long JWT_TOKEN_VALIDITY = 2 * 60 * 60 * 1000; // 2 hour in milliseconds
+    private static final long JWT_TOKEN_VALIDITY = 2 * 60 * 60 * 1000; // 2 ore (espresse in millisecondi)
 
     static {
-        // Every time the application starts, a new secret key is generated
+        // A ogni avvio dell'applicazione viene generata una nuova chiave segreta
         try {
             KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
             SecretKey sk = keyGen.generateKey();
@@ -51,7 +51,7 @@ public class JwtUtils {
             final String username = extractUserId(token);
             return !isTokenExpired(token);
         } catch (Exception e) {
-            return false; // Invalid token
+            return false; // Token non valido
         }
     }
 
