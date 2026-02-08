@@ -4,5 +4,5 @@ import jakarta.validation.constraints.*;
 
 public record MediaListUpdateDto(
         @NotBlank @Min(0)
-        int progress
+        //int progress
 ){}

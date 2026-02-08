@@ -27,7 +27,7 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
                )
              RETURN f.id AS id, f.name AS name, f.status AS status, f.duration as duration
             """) //per il momento sui film ho provato a fare questa poi vediamo se abbiamo altri attributi da proiettare
-    List<ListElementDto> findAnimeListsById(String id, String currentUserId);
+    List<ListElementDto> findFilmsListsById(String id, String currentUserId);
 
     @Query("""
             MATCH (u:User)->(l:Libri)
@@ -42,7 +42,7 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
               )
             RETURN l.id AS id, l.name AS name, l.chapters AS total
             """)//idem per i libri
-    List<ListElementDto> findMangaListsById(String id, String currentUserId);
+    List<ListElementDto> findBooksListsById(String id, String currentUserId);
 
 
 }
