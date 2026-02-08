@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FilmsUpdateDto extends MediaUpdateDto {
+public class MoviesUpdateDto extends MediaUpdateDto {
 
     @NotEmpty
     private String source;

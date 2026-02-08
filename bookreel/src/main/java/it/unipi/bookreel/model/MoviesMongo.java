@@ -7,10 +7,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-@Document(collection = "films")
+@Document(collection = "movies")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FilmsMongo extends MediaMongo{
+public class MoviesMongo extends MediaMongo{
     @NotBlank
 
     private String director;

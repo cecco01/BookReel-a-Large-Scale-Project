@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> {
     @Query("""
-             MATCH (u:User)->(f:Films)
+             MATCH (u:User)->(f:Movies)
              WHERE u.id = $id
                AND (
                  $id = $currentUserId OR
@@ -27,7 +27,7 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
                )
              RETURN f.id AS id, f.name AS name, f.status AS status, f.duration as duration
             """) //per il momento sui film ho provato a fare questa poi vediamo se abbiamo altri attributi da proiettare
-    List<ListElementDto> findFilmsListsById(String id, String currentUserId);
+    List<ListElementDto> findMoviesListsById(String id, String currentUserId);
 
     @Query("""
             MATCH (u:User)->(l:Libri)

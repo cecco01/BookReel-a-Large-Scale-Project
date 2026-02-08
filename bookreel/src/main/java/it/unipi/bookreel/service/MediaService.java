@@ -23,16 +23,16 @@ import java.util.UUID;
 @Service
 public class MediaService {
     private final BooksNeo4jRepository BooksNeo4jRepository;
-    private final FilmsNeo4jRepository FilmsNeo4jRepository;
+    private final MoviesNeo4jRepository MoviesNeo4jRepository;
     private final BooksMongoRepository BooksMongoRepository;
-    private final FilmsMongoRepository FilmsMongoRepository;
+    private final MoviesMongoRepository MoviesMongoRepository;
 
     @Autowired
-    public MediaService(BooksNeo4jRepository BooksNeo4jRepository, FilmsNeo4jRepository FilmsNeo4jRepository, BooksMongoRepository BooksMongoRepository, FilmsMongoRepository FilmsMongoRepository) {
+    public MediaService(BooksNeo4jRepository BooksNeo4jRepository, MoviesNeo4jRepository MoviesNeo4jRepository, BooksMongoRepository BooksMongoRepository, MoviesMongoRepository MoviesMongoRepository) {
         this.BooksNeo4jRepository = BooksNeo4jRepository;
-        this.FilmsNeo4jRepository = FilmsNeo4jRepository;
+        this.MoviesNeo4jRepository = MoviesNeo4jRepository;
         this.BooksMongoRepository = BooksMongoRepository;
-        this.FilmsMongoRepository = FilmsMongoRepository;
+        this.MoviesMongoRepository = MoviesMongoRepository;
     }
 
     /* ================================ MEDIAS CRUD ================================ */
@@ -42,14 +42,14 @@ public class MediaService {
         if (mediaType == MediaType.Books) {
             return BooksMongoRepository.findByNameContaining(name, pageable);
         } else {
-            return FilmsMongoRepository.findByNameContaining(name, pageable);
+            return MoviesMongoRepository.findByNameContaining(name, pageable);
         }
     }
 
     public MediaDetailsDto getMediaById(MediaType mediaType, String mediaId) {
         MediaMongo media = mediaType == MediaType.Books ? BooksMongoRepository.findById(mediaId)
                 .orElseThrow(() -> new NoSuchElementException("Media not found with id: " + mediaId)) :
-                FilmsMongoRepository.findById(mediaId)
+                MoviesMongoRepository.findById(mediaId)
                         .orElseThrow(() -> new NoSuchElementException("Media not found with id: " + mediaId));
 
         if (mediaType == MediaType.Books) {
@@ -66,19 +66,19 @@ public class MediaService {
                     .reviews(Books.getReviews())
                     .build();
         } else {
-            FilmsMongo Films = (FilmsMongo) media;
-            return FilmsDetailsDto.builder()
-                    .name(Films.getName())
-                    .status(Films.getStatus())
-                    .avgScore(Films.getNumScores() == 0 ? 0 : (double) Films.getSumScores() / Films.getNumScores())
-                    .genres(Films.getGenres())
-                    .synopsis(Films.getSynopsis())
-                    .type(Films.getType())
-                    .episodes(Films.getEpisodes())
-                    .source(Films.getSource())
-                    .duration(Films.getDuration())
-                    .studios(Films.getStudios())
-                    .reviews(Films.getReviews())
+            MoviesMongo Movies = (MoviesMongo) media;
+            return MoviesDetailsDto.builder()
+                    .name(Movies.getName())
+                    .status(Movies.getStatus())
+                    .avgScore(Movies.getNumScores() == 0 ? 0 : (double) Movies.getSumScores() / Movies.getNumScores())
+                    .genres(Movies.getGenres())
+                    .synopsis(Movies.getSynopsis())
+                    .type(Movies.getType())
+                    .episodes(Movies.getEpisodes())
+                    .source(Movies.getSource())
+                    .duration(Movies.getDuration())
+                    .studios(Movies.getStudios())
+                    .reviews(Movies.getReviews())
                     .build();
         }
     }
@@ -113,30 +113,30 @@ public class MediaService {
             BooksMongoRepository.save(newBooksMongo);
 
             return "Successfully added Books";
-        } else if (mediaCreationDto instanceof FilmsCreationDto FilmsCreationDto) {
-            FilmsNeo4j newFilmsNeo4j = new FilmsNeo4j();
-            newFilmsNeo4j.setId(mediaId);
-            newFilmsNeo4j.setName(FilmsCreationDto.getName());
-            newFilmsNeo4j.setStatus(FilmsCreationDto.getStatus());
-            newFilmsNeo4j.setEpisodes(FilmsCreationDto.getEpisodes());
-            newFilmsNeo4j.setGenres(FilmsCreationDto.getGenres());
-            FilmsNeo4jRepository.save(newFilmsNeo4j);
+        } else if (mediaCreationDto instanceof MoviesCreationDto MoviesCreationDto) {
+            MoviesNeo4j newMoviesNeo4j = new MoviesNeo4j();
+            newMoviesNeo4j.setId(mediaId);
+            newMoviesNeo4j.setName(MoviesCreationDto.getName());
+            newMoviesNeo4j.setStatus(MoviesCreationDto.getStatus());
+            newMoviesNeo4j.setEpisodes(MoviesCreationDto.getEpisodes());
+            newMoviesNeo4j.setGenres(MoviesCreationDto.getGenres());
+            MoviesNeo4jRepository.save(newMoviesNeo4j);
 
-            FilmsMongo newFilmsMongo = new FilmsMongo();
-            newFilmsMongo.setId(mediaId);
-            newFilmsMongo.setName(FilmsCreationDto.getName());
-            newFilmsMongo.setStatus(FilmsCreationDto.getStatus());
-            newFilmsMongo.setEpisodes(FilmsCreationDto.getEpisodes());
-            newFilmsMongo.setSumScores(0);
-            newFilmsMongo.setNumScores(0);
-            newFilmsMongo.setGenres(FilmsCreationDto.getGenres());
-            newFilmsMongo.setType(FilmsCreationDto.getType());
-            newFilmsMongo.setSource(FilmsCreationDto.getSource());
-            newFilmsMongo.setDuration(FilmsCreationDto.getDuration());
-            newFilmsMongo.setStudios(FilmsCreationDto.getStudios());
-            newFilmsMongo.setSynopsis(FilmsCreationDto.getSynopsis());
-            FilmsMongoRepository.save(newFilmsMongo);
-            return "Successfully added Films";
+            MoviesMongo newMoviesMongo = new MoviesMongo();
+            newMoviesMongo.setId(mediaId);
+            newMoviesMongo.setName(MoviesCreationDto.getName());
+            newMoviesMongo.setStatus(MoviesCreationDto.getStatus());
+            newMoviesMongo.setEpisodes(MoviesCreationDto.getEpisodes());
+            newMoviesMongo.setSumScores(0);
+            newMoviesMongo.setNumScores(0);
+            newMoviesMongo.setGenres(MoviesCreationDto.getGenres());
+            newMoviesMongo.setType(MoviesCreationDto.getType());
+            newMoviesMongo.setSource(MoviesCreationDto.getSource());
+            newMoviesMongo.setDuration(MoviesCreationDto.getDuration());
+            newMoviesMongo.setStudios(MoviesCreationDto.getStudios());
+            newMoviesMongo.setSynopsis(MoviesCreationDto.getSynopsis());
+            MoviesMongoRepository.save(newMoviesMongo);
+            return "Successfully added Movies";
         }
         throw new IllegalArgumentException("Invalid media type");
     }
@@ -185,49 +185,49 @@ public class MediaService {
             BooksMongoRepository.save(targetMongo);
 
             return "Successfully updated media";
-        } else if (updates instanceof FilmsUpdateDto FilmsUpdateDto) {
-            FilmsMongo targetMongo = FilmsMongoRepository.findById(mediaId)
+        } else if (updates instanceof MoviesUpdateDto MoviesUpdateDto) {
+            MoviesMongo targetMongo = MoviesMongoRepository.findById(mediaId)
                     .orElseThrow(() -> new NoSuchElementException("Media not found with id: " + mediaId));
-            FilmsNeo4j targetNeo4j = FilmsNeo4jRepository.findById(mediaId)
+            MoviesNeo4j targetNeo4j = MoviesNeo4jRepository.findById(mediaId)
                     .orElseThrow(() -> new NoSuchElementException("Media not found with id: " + mediaId));
 
-            if (FilmsUpdateDto.getName() != null) {
-                targetMongo.setName(FilmsUpdateDto.getName());
-                targetNeo4j.setName(FilmsUpdateDto.getName());
+            if (MoviesUpdateDto.getName() != null) {
+                targetMongo.setName(MoviesUpdateDto.getName());
+                targetNeo4j.setName(MoviesUpdateDto.getName());
             }
-            if (FilmsUpdateDto.getStatus() != null) {
-                targetMongo.setStatus(FilmsUpdateDto.getStatus());
-                targetNeo4j.setStatus(FilmsUpdateDto.getStatus());
+            if (MoviesUpdateDto.getStatus() != null) {
+                targetMongo.setStatus(MoviesUpdateDto.getStatus());
+                targetNeo4j.setStatus(MoviesUpdateDto.getStatus());
             }
-            if (FilmsUpdateDto.getEpisodes() != 0) {
-                if(FilmsUpdateDto.getEpisodes() < targetMongo.getEpisodes()) {
+            if (MoviesUpdateDto.getEpisodes() != 0) {
+                if(MoviesUpdateDto.getEpisodes() < targetMongo.getEpisodes()) {
                     throw new IllegalArgumentException("Cannot decrease number of episodes");
                 }
-                targetMongo.setEpisodes(FilmsUpdateDto.getEpisodes());
-                targetNeo4j.setEpisodes(FilmsUpdateDto.getEpisodes());
+                targetMongo.setEpisodes(MoviesUpdateDto.getEpisodes());
+                targetNeo4j.setEpisodes(MoviesUpdateDto.getEpisodes());
             }
-            if (FilmsUpdateDto.getGenres() != null) {
-                targetMongo.setGenres(FilmsUpdateDto.getGenres());
-                targetNeo4j.setGenres(FilmsUpdateDto.getGenres());
+            if (MoviesUpdateDto.getGenres() != null) {
+                targetMongo.setGenres(MoviesUpdateDto.getGenres());
+                targetNeo4j.setGenres(MoviesUpdateDto.getGenres());
             }
-            if (FilmsUpdateDto.getSynopsis() != null) {
-                targetMongo.setSynopsis(FilmsUpdateDto.getSynopsis());
+            if (MoviesUpdateDto.getSynopsis() != null) {
+                targetMongo.setSynopsis(MoviesUpdateDto.getSynopsis());
             }
-            if (FilmsUpdateDto.getType() != null) {
-                targetMongo.setType(FilmsUpdateDto.getType());
+            if (MoviesUpdateDto.getType() != null) {
+                targetMongo.setType(MoviesUpdateDto.getType());
             }
-            if (FilmsUpdateDto.getSource() != null) {
-                targetMongo.setSource(FilmsUpdateDto.getSource());
+            if (MoviesUpdateDto.getSource() != null) {
+                targetMongo.setSource(MoviesUpdateDto.getSource());
             }
-            if (FilmsUpdateDto.getDuration() != 0) {
-                targetMongo.setDuration(FilmsUpdateDto.getDuration());
+            if (MoviesUpdateDto.getDuration() != 0) {
+                targetMongo.setDuration(MoviesUpdateDto.getDuration());
             }
-            if (FilmsUpdateDto.getStudios() != null) {
-                targetMongo.setStudios(FilmsUpdateDto.getStudios());
+            if (MoviesUpdateDto.getStudios() != null) {
+                targetMongo.setStudios(MoviesUpdateDto.getStudios());
             }
 
-            FilmsNeo4jRepository.save(targetNeo4j);
-            FilmsMongoRepository.save(targetMongo);
+            MoviesNeo4jRepository.save(targetNeo4j);
+            MoviesMongoRepository.save(targetMongo);
             return "Successfully updated media";
         }
         throw new IllegalArgumentException("Invalid media type");
@@ -247,12 +247,12 @@ public class MediaService {
             BooksNeo4jRepository.delete(targetNeo4j);
             BooksMongoRepository.delete(targetMongo);
         } else {
-            FilmsMongo targetMongo = FilmsMongoRepository.findById(mediaId)
+            MoviesMongo targetMongo = MoviesMongoRepository.findById(mediaId)
                     .orElseThrow(() -> new NoSuchElementException("Media not found with id: " + mediaId));
-            FilmsNeo4j targetNeo4j = FilmsNeo4jRepository.findById(mediaId)
+            MoviesNeo4j targetNeo4j = MoviesNeo4jRepository.findById(mediaId)
                     .orElseThrow(() -> new NoSuchElementException("Media not found with id: " + mediaId));
-            FilmsNeo4jRepository.delete(targetNeo4j);
-            FilmsMongoRepository.delete(targetMongo);
+            MoviesNeo4jRepository.delete(targetNeo4j);
+            MoviesMongoRepository.delete(targetMongo);
         }
         return "Successfully deleted media";
     }
@@ -268,7 +268,7 @@ public class MediaService {
             hasReviewed = targetMongo.getReviews().stream()
                     .anyMatch(r -> r.getUserId().equals(user.getId()));
         } else {
-            targetMongo = FilmsMongoRepository.findById(mediaId)
+            targetMongo = MoviesMongoRepository.findById(mediaId)
                     .orElseThrow(() -> new NoSuchElementException("Media not found with id: " + mediaId));
             hasReviewed = targetMongo.getReviews().stream()
                     .anyMatch(r -> r.getUserId().equals(user.getId()));
@@ -295,8 +295,8 @@ public class MediaService {
             BooksMongo BooksMongo = (BooksMongo) targetMongo;
             BooksMongoRepository.save(BooksMongo);
         } else {
-            FilmsMongo FilmsMongo = (FilmsMongo) targetMongo;
-            FilmsMongoRepository.save(FilmsMongo);
+            MoviesMongo MoviesMongo = (MoviesMongo) targetMongo;
+            MoviesMongoRepository.save(MoviesMongo);
         }
 
         return "Successfully added review";
@@ -315,7 +315,7 @@ public class MediaService {
             targetMongo.setNumScores(targetMongo.getNumScores() - 1);
             BooksMongoRepository.save(targetMongo);
         } else {
-            FilmsMongo targetMongo = FilmsMongoRepository.findById(mediaId)
+            MoviesMongo targetMongo = MoviesMongoRepository.findById(mediaId)
                     .orElseThrow(() -> new NoSuchElementException("Media not found with id: " + mediaId));
             List<ReviewDto> reviews = targetMongo.getReviews();
             ReviewDto review = reviews.stream().filter(r -> r.getUserId().equals(reviewId))
@@ -324,7 +324,7 @@ public class MediaService {
             targetMongo.setReviews(reviews);
             targetMongo.setSumScores(targetMongo.getSumScores() - review.getScore());
             targetMongo.setNumScores(targetMongo.getNumScores() - 1);
-            FilmsMongoRepository.save(targetMongo);
+            MoviesMongoRepository.save(targetMongo);
         }
         return "Successfully deleted review";
     }
