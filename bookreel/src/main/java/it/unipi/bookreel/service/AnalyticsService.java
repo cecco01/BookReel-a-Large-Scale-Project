@@ -42,6 +42,74 @@ public class AnalyticsService {
         this.mongoTemplate = mongoTemplate;
     }
 
-//c'è ancora da scrivere le analytics
+//ANALYTICS METHODS:
+// per ogni anno, qual è stato il mese con più registrazioni e quante registrazioni ci sono state in quel mese
+    public List<MonthAnalytic> getMonthlyRegistrations() {
+        MonthAnalytic maxDocument = monthAnalyticRepository.findTopByOrderByYearDesc();
+        int lastYearCalculated = maxDocument != null ? maxDocument.getYear() : 2000;
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, lastYearCalculated);
+        cal.set(Calendar.DAY_OF_YEAR, 1);
+        Date firstDay = cal.getTime();
+        List<MonthAnalytic> results = userMongoRepository.findMaxMonthByYearGreaterThan(firstDay);
+        monthAnalyticRepository.saveAll(results);
+        return monthAnalyticRepository.findAllByOrderByYear();
+    }
 
+// per ogni media, qual è la variazione di valutazioni (in termini di punteggio medio) rispetto al mese precedente, e quali sono i media più controversi (con la maggiore varianza nelle valutazioni)
+    public List<ControversialMediaDto> getControversialMedia(MediaType mediaType) {
+        if (mediaType == MediaType.Books) {
+            return BooksMongoRepository.findTopVarianceBooks();
+        } else {
+            return MoviesMongoRepository.findTopVarianceMovies();
+        }
+    }
+
+// per ogni media, quali stanno peggiorando in temrini di punteggio
+    public List<TrendingMediaDto> getDecliningMedia(MediaType mediaType) {
+        if (mediaType == MediaType.Books) {
+            return BooksMongoRepository.findTopDecliningBooks();
+        } else {
+            return MoviesMongoRepository.findTopDecliningMovies();
+        }
+    }
+
+// per ogni media, quali stanno migliorando in temrini di punteggio
+    public List<TrendingMediaDto> getImprovingMedia(MediaType mediaType) {
+        if (mediaType == MediaType.Books) {
+            return BooksMongoRepository.findTopImprovingBooks();
+        } else {
+            return MoviesMongoRepository.findTopImprovingMovies();
+        }
+    }
+
+// quali sono le componenti fortemente connesse (SCC) all'interno del grafo degli utenti e delle loro liste, e chi sono gli influencer più importanti (utenti con più follower)
+    public List<SCCAnalyticDto> getSCC() {
+        List<SCCAnalyticDto> scc = userNeo4jRepository.findSCC();
+        userNeo4jRepository.dropGraph("graph");
+        return scc;
+    }
+
+// quali sono gli utenti più seguiti
+    public List<InfluencersDto> getInfluencers() {
+        return userNeo4jRepository.findMostFollowedUsers();
+    }
+
+// per ogni media, quante liste degli utenti lo contengono
+    public List<ListCounterAnalyticDto> getListCounter(MediaType mediaType) {
+        if (mediaType == MediaType.Books) {
+            return BooksNeo4jRepository.findListCounters();
+        } else {
+            return MoviesNeo4jRepository.findListCounters();
+        }
+    }
+
+// per un dato media, in quante e quali liste degli utenti è presente
+    public List<MediaInListsAnalyticDto> getMediaInLists(MediaType mediaType, String mediaId) {
+        if (mediaType == MediaType.Books) {
+            return BooksNeo4jRepository.findBooksAppearancesInLists(mediaId);
+        } else {
+            return MoviesNeo4jRepository.findMoviesAppearancesInLists(mediaId);
+        }
+    }
 }

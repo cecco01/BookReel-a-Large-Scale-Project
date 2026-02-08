@@ -14,4 +14,4 @@ public class BooksDetailsDto extends MediaDetailsDto {
 }
 
 
-//nel caso mettere anche il genere e altri sttributi specifici dei libri
+//nel caso mettere anche il genere e altri attributi specifici dei libri

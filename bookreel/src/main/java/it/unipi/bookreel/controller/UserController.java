@@ -94,7 +94,8 @@ public class UserController {
         return ResponseEntity.ok(userService.addMediaToUserList(user.getUser().getId(), mediaId, mediaType));
     }
 
-    @PatchMapping("/user/lists/{mediaType}/{mediaId}")
+//PCCHIO: modifyMediaInUserList si può togliere se non vogliamo tenere traccia del progresso di lettura/visione dei media, altrimenti bisogna modificare anche altri file per gestire questo aspetto
+    @PatchMapping("/user/lists/{mediaType}/{mediaId}") 
     public ResponseEntity<String> modifyMediaInUserList(@PathVariable MediaType mediaType, @PathVariable String mediaId, @RequestBody MediaListUpdateDto progress) {
         UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(userService.modifyMediaInUserList(user.getUser().getId(), mediaId, mediaType));

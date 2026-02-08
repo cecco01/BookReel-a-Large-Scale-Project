@@ -180,6 +180,8 @@ public class UserService {
         return "Media added to user list";
     }
 
+
+//!!! Questa si può togliere (prima controlli altri file che al usano) la uso per aggiornare il progresso di lettura/visione di un media, ma noi non abbiamo progresso
     public String modifyMediaInUserList(String userId, String mediaId, MediaType mediaType, int progress) {
         userNeo4jRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
