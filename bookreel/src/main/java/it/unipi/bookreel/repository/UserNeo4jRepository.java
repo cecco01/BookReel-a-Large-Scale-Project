@@ -40,8 +40,8 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
                     WHERE follower.id = $currentUserId
                 })
               )
-            RETURN l.id AS id, l.name AS name, l.chapters AS total
-            """)//idem per i libri
+            RETURN l.id AS id, l.name AS name, l.numPages AS total
+            """)//idem per i libri, vedi qual è il nome esatto per l'attributo numpages
     List<ListElementDto> findBooksListsById(String id, String currentUserId);
 
 //da modificare visto che non abbiamo progress!!
@@ -72,11 +72,11 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
 // ok abbiamo il numero di capiotoli ma non so se lasciarla così?
     @Query("""
             MATCH (u:User {id: $userId})-[rel:LIST_ELEMENT]->(b:Books {id: $BooksId})
-            WHERE $chaptersRead <= m.chapters
-            SET rel.progress = $chaptersRead
+            WHERE $numPag <= m.numPages
+            SET rel.progress = $numPag
             RETURN count(m) > 0
             """)
-    boolean modifyBooksInList(String userId, String BooksId, int chaptersRead);
+    boolean modifyBooksInList(String userId, String BooksId, int numPag);
 
 
 //rimuove un media "Film" dalla lista dell'utente, non elimina il nodo del media

@@ -12,7 +12,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class LibriMongo extends MediaMongo {
     @NotBlank
-    private int chapters;
+    private int numPages;
 
     private List<String> authors;
 }
