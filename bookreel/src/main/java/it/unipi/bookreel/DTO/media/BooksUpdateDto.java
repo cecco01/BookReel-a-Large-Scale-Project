@@ -10,7 +10,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class BooksUpdateDto extends MediaUpdateDto {
     @NotEmpty
-    private int chapters;
+    private int numPages;
 
     @NotEmpty
     private List<String> authors;

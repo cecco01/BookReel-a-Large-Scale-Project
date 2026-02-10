@@ -3,7 +3,7 @@ package it.unipi.bookreel.repository;
 import it.unipi.bookreel.DTO.analytic.ControversialMediaDto;
 import it.unipi.bookreel.DTO.analytic.TrendingMediaDto;
 import it.unipi.bookreel.DTO.media.MediaAverageDto;
-import it.unipi.bookreel.model.MoviesMongo;
+import it.unipi.bookreel.model.FilmsMongo;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.mongodb.repository.Aggregation;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MoviesMongoRepository extends MongoRepository<MoviesMongo, String> {
+public interface FilmsMongoRepository extends MongoRepository<FilmsMongo, String> {
     @Aggregation(pipeline = {
             "{ '$match': { 'name': { $regex: ?0, $options: 'i' } } }",
             "{ '$addFields': { 'averageScore': { $cond: { if: { $eq: ['$numScores', 0] }, then: 0, else: { $divide: ['$sumScores', '$numScores'] } } } } }",
@@ -37,11 +37,11 @@ public interface MoviesMongoRepository extends MongoRepository<MoviesMongo, Stri
             "{ '$sort': { 'genres': 1, 'variance': -1 } }",
             "{ '$group': { " +
                     "   '_id': '$genres', " +
-                    "   'Movies': { '$first': { 'id': '$_id', 'name': '$name', 'variance': '$variance' } } " +
+                    "   'Films': { '$first': { 'id': '$_id', 'name': '$name', 'variance': '$variance' } } " +
                     "} }",
-            "{ '$project': { '_id': 0, 'genre': '$_id', 'id': '$Movies.id', 'name': '$Movies.name' } }"
+            "{ '$project': { '_id': 0, 'genre': '$_id', 'id': '$Films.id', 'name': '$Films.name' } }"
     })
-    List<ControversialMediaDto> findTopVarianceMovies();
+    List<ControversialMediaDto> findTopVarianceFilms();
     @Aggregation(pipeline = {
             "{ '$addFields': { " +
                     "   'averageScore': { '$cond': { " +
@@ -58,7 +58,7 @@ public interface MoviesMongoRepository extends MongoRepository<MoviesMongo, Stri
             "{ '$limit': 10 }",
             "{ '$project': { '_id': 0, 'id': '$_id', 'name': '$name', 'scoreDifference': 1 } }"
     })
-    List<TrendingMediaDto> findTopDecliningMovies();
+    List<TrendingMediaDto> findTopDecliningFilms();
     @Aggregation(pipeline = {
             "{ '$addFields': { " +
                     "   'averageScore': { '$cond': { " +
@@ -75,7 +75,7 @@ public interface MoviesMongoRepository extends MongoRepository<MoviesMongo, Stri
             "{ '$limit': 10 }",
             "{ '$project': { '_id': 0, 'id': '$_id', 'name': '$name', 'scoreDifference': 1 } }"
     })
-    List<TrendingMediaDto> findTopImprovingMovies();
+    List<TrendingMediaDto> findTopImprovingFilms();
 
     @Aggregation(pipeline = {
             "{ '$match': { '$expr': { '$or': [ { '$eq': [?0, null] }, { '$in': [?0, '$genres'] } ] } } }",
@@ -84,5 +84,5 @@ public interface MoviesMongoRepository extends MongoRepository<MoviesMongo, Stri
             "{ '$limit': 10 }",
             "{ '$project': { 'id': 1, 'name': 1, 'averageScore': 1 } }"
     })
-    List<MediaAverageDto> findTop10Movies(String genre);
+    List<MediaAverageDto> findTop10Films(String genre);
 }

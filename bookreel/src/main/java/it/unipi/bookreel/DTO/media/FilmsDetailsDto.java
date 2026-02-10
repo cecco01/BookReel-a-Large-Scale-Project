@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @SuperBuilder
-public class MoviesDetailsDto extends MediaDetailsDto {
+public class FilmsDetailsDto extends MediaDetailsDto {
 
     @NotEmpty
     private String source;

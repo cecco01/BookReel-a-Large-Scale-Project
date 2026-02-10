@@ -4,7 +4,7 @@ import it.unipi.bookreel.DTO.media.MediaAverageDto;
 import it.unipi.bookreel.DTO.media.MediaIdNameDto;
 import it.unipi.bookreel.DTO.user.UserIdUsernameDto;
 import it.unipi.bookreel.enumerator.MediaType;
-import it.unipi.bookreel.repository.MoviesMongoRepository;
+import it.unipi.bookreel.repository.FilmsMongoRepository;
 import it.unipi.bookreel.repository.BooksMongoRepository;
 import it.unipi.bookreel.repository.UserNeo4jRepository;
 import org.apache.catalina.User;
@@ -19,13 +19,13 @@ public class RecommendationService {
 
     private final UserNeo4jRepository userNeo4jRepository;
     private final BooksMongoRepository BooksMongoRepository;
-    private final MoviesMongoRepository MoviesMongoRepository;
+    private final FilmsMongoRepository FilmsMongoRepository;
 
     @Autowired
-    public RecommendationService(UserNeo4jRepository userNeo4jRepository, BooksMongoRepository BooksMongoRepository, MoviesMongoRepository MoviesMongoRepository) {
+    public RecommendationService(UserNeo4jRepository userNeo4jRepository, BooksMongoRepository BooksMongoRepository, FilmsMongoRepository FilmsMongoRepository) {
         this.userNeo4jRepository = userNeo4jRepository;
         this.BooksMongoRepository = BooksMongoRepository;
-        this.MoviesMongoRepository = MoviesMongoRepository;
+        this.FilmsMongoRepository = FilmsMongoRepository;
     }
 
     public List<UserIdUsernameDto> getUsersWithSimilarTastes(String userId) {
@@ -40,8 +40,8 @@ public class RecommendationService {
     }
 
     public List<MediaAverageDto> getTop10Media(MediaType mediaType, String genre) {
-        if (mediaType == MediaType.Movies) {
-            return MoviesMongoRepository.findTop10Movies(genre);
+        if (mediaType == MediaType.Films) {
+            return FilmsMongoRepository.findTop10Films(genre);
         } else {
             return BooksMongoRepository.findTop10Books(genre);
         }

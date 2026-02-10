@@ -8,7 +8,7 @@ import it.unipi.bookreel.enumerator.MediaType;
 import it.unipi.bookreel.model.UserMongo;
 import it.unipi.bookreel.model.UserNeo4j;
 import it.unipi.bookreel.model.UserPrincipal;
-import it.unipi.bookreel.repository.MoviesMongoRepository;
+import it.unipi.bookreel.repository.FilmsMongoRepository;
 import it.unipi.bookreel.repository.BooksMongoRepository;
 import it.unipi.bookreel.repository.UserMongoRepository;
 import it.unipi.bookreel.repository.UserNeo4jRepository;
@@ -37,15 +37,15 @@ public class UserService {
     private final UserMongoRepository userMongoRepository;
     private final PasswordEncoder encoder;
     private final UserNeo4jRepository userNeo4jRepository;
-    private final MoviesMongoRepository MoviesMongoRepository;
+    private final FilmsMongoRepository FilmsMongoRepository;
     private final BooksMongoRepository BooksMongoRepository;
 
     @Autowired
-    public UserService(UserMongoRepository userMongoRepository, PasswordEncoder encoder, UserNeo4jRepository userNeo4jRepository, MoviesMongoRepository MoviesMongoRepository, BooksMongoRepository BooksMongoRepository) {
+    public UserService(UserMongoRepository userMongoRepository, PasswordEncoder encoder, UserNeo4jRepository userNeo4jRepository, FilmsMongoRepository FilmsMongoRepository, BooksMongoRepository BooksMongoRepository) {
         this.userMongoRepository = userMongoRepository;
         this.encoder = encoder;
         this.userNeo4jRepository = userNeo4jRepository;
-        this.MoviesMongoRepository = MoviesMongoRepository;
+        this.FilmsMongoRepository = FilmsMongoRepository;
         this.BooksMongoRepository = BooksMongoRepository;
     }
 
@@ -104,7 +104,7 @@ public class UserService {
 
         if (updates.username() != null) {
             //updates reviews username
-            MoviesMongoRepository.updateReviewsByUsername(user.getUsername(), updates.username());
+            FilmsMongoRepository.updateReviewsByUsername(user.getUsername(), updates.username());
             BooksMongoRepository.updateReviewsByUsername(user.getUsername(), updates.username());
         }
 
@@ -120,7 +120,7 @@ public class UserService {
         userNeo4jRepository.deleteById(user.getId());
 
         userMongoRepository.delete(user);
-        MoviesMongoRepository.deleteReviewsByUsername(user.getUsername());
+        FilmsMongoRepository.deleteReviewsByUsername(user.getUsername());
         BooksMongoRepository.deleteReviewsByUsername(user.getUsername());
         userMongoRepository.deleteUserFromFollowers(user.getId());
 
@@ -134,8 +134,8 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
         List<ListElementDto> mediaList;
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (mediaType == MediaType.Movies) {
-            mediaList = userNeo4jRepository.findMoviesListsById(id, principal.getUser().getId());
+        if (mediaType == MediaType.Films) {
+            mediaList = userNeo4jRepository.findFilmsListsById(id, principal.getUser().getId());
         } else {
             mediaList = userNeo4jRepository.findBooksListsById(id, principal.getUser().getId());
         }
@@ -168,8 +168,8 @@ public class UserService {
         userNeo4jRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
         boolean success;
-        if (mediaType == MediaType.Movies) {
-            success = userNeo4jRepository.addMoviesToList(userId, mediaId);
+        if (mediaType == MediaType.Films) {
+            success = userNeo4jRepository.addFilmsToList(userId, mediaId);
         } else {
             success = userNeo4jRepository.addBooksToList(userId, mediaId);
         }
@@ -186,8 +186,8 @@ public class UserService {
         userNeo4jRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
         boolean success;
-        if (mediaType == MediaType.Movies) {
-            success = userNeo4jRepository.modifyMoviesInList(userId, mediaId, progress);
+        if (mediaType == MediaType.Films) {
+            success = userNeo4jRepository.modifyFilmsInList(userId, mediaId, progress);
         } else {
             success = userNeo4jRepository.modifyBooksInList(userId, mediaId, progress);
         }
@@ -207,8 +207,8 @@ public class UserService {
         userNeo4jRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
         boolean success;
-        if (mediaType == MediaType.Movies) {
-            success = userNeo4jRepository.removeMoviesFromList(userId, mediaId);
+        if (mediaType == MediaType.Films) {
+            success = userNeo4jRepository.removeFilmsFromList(userId, mediaId);
         } else {
             success = userNeo4jRepository.removeBooksFromList(userId, mediaId);
         }

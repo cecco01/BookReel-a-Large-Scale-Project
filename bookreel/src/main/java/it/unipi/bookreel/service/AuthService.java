@@ -7,7 +7,7 @@ import it.unipi.bookreel.enumerator.PrivacyStatus;
 import it.unipi.bookreel.model.UserMongo;
 import it.unipi.bookreel.model.UserNeo4j;
 import it.unipi.bookreel.model.UserPrincipal;
-import it.unipi.bookreel.repository.MoviesongoRepository;
+import it.unipi.bookreel.repository.FilmsongoRepository;
 import it.unipi.bookreel.repository.BooksMongoRepository;
 import it.unipi.bookreel.repository.UserMongoRepository;
 import it.unipi.bookreel.repository.UserNeo4jRepository;
@@ -35,7 +35,7 @@ public class AuthService {
     private final UserNeo4jRepository userNeo4jRepository;
 
     @Autowired
-    public AuthService(AuthenticationManager authManager, UserMongoRepository userMongoRepository, PasswordEncoder encoder, UserNeo4jRepository userNeo4jRepository, MoviesMongoRepository MoviesMongoRepository, BooksMongoRepository BooksMongoRepository) {
+    public AuthService(AuthenticationManager authManager, UserMongoRepository userMongoRepository, PasswordEncoder encoder, UserNeo4jRepository userNeo4jRepository, FilmsMongoRepository FilmsMongoRepository, BooksMongoRepository BooksMongoRepository) {
         this.authManager = authManager;
         this.userMongoRepository = userMongoRepository;
         this.encoder = encoder;

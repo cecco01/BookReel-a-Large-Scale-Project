@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> {
     @Query("""
-             MATCH (u:User)-[l:LIST_ELEMENT]->(f:Movies)
+             MATCH (u:User)-[l:LIST_ELEMENT]->(f:Films)
              WHERE u.id = $id
                AND (
                  $id = $currentUserId OR
@@ -27,7 +27,7 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
                )
              RETURN f.id AS id, f.name AS name, f.status AS status, f.duration as duration
             """) //per il momento sui film ho provato a fare questa poi vediamo se abbiamo altri attributi da proiettare
-    List<ListElementDto> findMoviesListsById(String id, String currentUserId);
+    List<ListElementDto> findFilmsListsById(String id, String currentUserId);
 
     @Query("""
             MATCH (u:User)-[l:LIST_ELEMENT]->(l:Libri)
@@ -46,10 +46,10 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
 
 //da modificare visto che non abbiamo progress!!
 @Query("MATCH (u:User {id: $userId})" +
-            " MATCH (m:Movies {id: $mediaId})" +
+            " MATCH (m:Films {id: $mediaId})" +
             " MERGE (u)-[:LIST_ELEMENT {progress: 0}]->(a)" +
             " RETURN count(a) > 0")
-    boolean addMoviesToList(String userId, String mediaId);
+    boolean addFilmsToList(String userId, String mediaId);
 
 
 //da modificare visto che non abbiamo progress!!
@@ -61,12 +61,12 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
 
 //da modificare visto che non abbiamo progress!!
     @Query("""
-            MATCH (u:User {id: $userId})-[rel:LIST_ELEMENT]->(m:Movies {id: $MoviesId})
+            MATCH (u:User {id: $userId})-[rel:LIST_ELEMENT]->(m:Films {id: $FilmsId})
             WHERE $episodesWatched <= a.episodes
             SET rel.progress = $episodesWatched
             RETURN COUNT(a) > 0
             """)
-    boolean modifyMoviesInList(String userId, String MoviesId, int episodesWatched);
+    boolean modifyFilmsInList(String userId, String FilmsId, int episodesWatched);
 
 
 // ok abbiamo il numero di capiotoli ma non so se lasciarla così?
@@ -80,10 +80,10 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
 
 
 //rimuove un media "Film" dalla lista dell'utente, non elimina il nodo del media
-    @Query("MATCH (u:User {id: $userId})-[r:LIST_ELEMENT]->(m:Movies {id: $mediaId})" +
+    @Query("MATCH (u:User {id: $userId})-[r:LIST_ELEMENT]->(m:Films {id: $mediaId})" +
             " DELETE r" +
             " RETURN count(a) > 0")
-    boolean removeMoviesFromList(String userId, String mediaId);
+    boolean removeFilmsFromList(String userId, String mediaId);
 
 //rimuove un media "Libro" dalla lista dell'utente, non elimina il nodo del media
     @Query("MATCH (u:User {id: $userId})-[r:LIST_ELEMENT]->(b:Books {id: $mediaId})" +
@@ -169,10 +169,10 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
     List<UserIdUsernameDto> findUsersWithSimilarTastes(String userId);
 
 
-//prende i media presenti nelle liste degli utenti seguiti dall’utente userId, filtra per tipo (Movies o Books) e per privacy (esclude NOBODY). Conta quante volte ogni media appare e restituisce i 10 più popolari (restituisce [id], nome e count)
+//prende i media presenti nelle liste degli utenti seguiti dall’utente userId, filtra per tipo (Films o Books) e per privacy (esclude NOBODY). Conta quante volte ogni media appare e restituisce i 10 più popolari (restituisce [id], nome e count)
     @Query("""
             MATCH (user:User {id: $userId})-[:FOLLOW]->(f:User)-[:LIST_ELEMENT]->(media)
-            WHERE ((medim:Movies AND $mediaType = 'Movies') OR (medim:Books AND $mediaType = 'Books'))
+            WHERE ((medim:Films AND $mediaType = 'Films') OR (medim:Books AND $mediaType = 'Books'))
                   AND f.privacyStatus <> 'NOBODY'
             RETURN media.id AS id, media.name AS name, count(media.id) AS count
             ORDER BY count DESC

@@ -8,7 +8,7 @@ import java.util.List;
 @Getter
 @SuperBuilder
 public class BooksDetailsDto extends MediaDetailsDto {
-    private int chapters;
+    private int numPages;
 
     private List<String> authors;
 }

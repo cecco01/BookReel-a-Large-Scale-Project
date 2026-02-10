@@ -20,25 +20,25 @@ public class AnalyticsService {
     private final UserNeo4jRepository userNeo4jRepository;
     private final MonthAnalyticRepository monthAnalyticRepository;
     private final BooksMongoRepository BooksMongoRepository;
-    private final MoviesMongoRepository MoviesMongoRepository;
+    private final FilmsMongoRepository FilmsMongoRepository;
     private final BooksNeo4jRepository BooksNeo4jRepository;
-    private final MoviesNeo4jRepository MoviesNeo4jRepository;
+    private final FilmsNeo4jRepository FilmsNeo4jRepository;
 
     private final MongoTemplate mongoTemplate;
 
     @Autowired
     public AnalyticsService(UserMongoRepository userMongoRepository, UserNeo4jRepository userNeo4jRepository,
-                            BooksMongoRepository BooksMongoRepository, MoviesMongoRepository MoviesMongoRepository,
-                            BooksNeo4jRepository BooksNeo4jRepository, MoviesNeo4jRepository MoviesNeo4jRepository,
+                            BooksMongoRepository BooksMongoRepository, FilmsMongoRepository FilmsMongoRepository,
+                            BooksNeo4jRepository BooksNeo4jRepository, FilmsNeo4jRepository FilmsNeo4jRepository,
                             MonthAnalyticRepository monthAnalyticRepository,
                             MongoTemplate mongoTemplate) {
         this.userMongoRepository = userMongoRepository;
         this.userNeo4jRepository = userNeo4jRepository;
         this.monthAnalyticRepository = monthAnalyticRepository;
         this.BooksMongoRepository = BooksMongoRepository;
-        this.MoviesMongoRepository = MoviesMongoRepository;
+        this.FilmsMongoRepository = FilmsMongoRepository;
         this.BooksNeo4jRepository = BooksNeo4jRepository;
-        this.MoviesNeo4jRepository = MoviesNeo4jRepository;
+        this.FilmsNeo4jRepository = FilmsNeo4jRepository;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -61,7 +61,7 @@ public class AnalyticsService {
         if (mediaType == MediaType.Books) {
             return BooksMongoRepository.findTopVarianceBooks();
         } else {
-            return MoviesMongoRepository.findTopVarianceMovies();
+            return FilmsMongoRepository.findTopVarianceFilms();
         }
     }
 
@@ -70,7 +70,7 @@ public class AnalyticsService {
         if (mediaType == MediaType.Books) {
             return BooksMongoRepository.findTopDecliningBooks();
         } else {
-            return MoviesMongoRepository.findTopDecliningMovies();
+            return FilmsMongoRepository.findTopDecliningFilms();
         }
     }
 
@@ -79,7 +79,7 @@ public class AnalyticsService {
         if (mediaType == MediaType.Books) {
             return BooksMongoRepository.findTopImprovingBooks();
         } else {
-            return MoviesMongoRepository.findTopImprovingMovies();
+            return FilmsMongoRepository.findTopImprovingFilms();
         }
     }
 
@@ -100,7 +100,7 @@ public class AnalyticsService {
         if (mediaType == MediaType.Books) {
             return BooksNeo4jRepository.findListCounters();
         } else {
-            return MoviesNeo4jRepository.findListCounters();
+            return FilmsNeo4jRepository.findListCounters();
         }
     }
 
@@ -109,7 +109,7 @@ public class AnalyticsService {
         if (mediaType == MediaType.Books) {
             return BooksNeo4jRepository.findBooksAppearancesInLists(mediaId);
         } else {
-            return MoviesNeo4jRepository.findMoviesAppearancesInLists(mediaId);
+            return FilmsNeo4jRepository.findFilmsAppearancesInLists(mediaId);
         }
     }
 }

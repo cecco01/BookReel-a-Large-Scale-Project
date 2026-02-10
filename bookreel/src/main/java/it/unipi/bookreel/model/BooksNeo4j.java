@@ -10,7 +10,7 @@ import java.util.List;
 
 @Node("Books")
 @Data
-public class LibriNeo4j {
+public class BooksNeo4j {
 
     @Id
     private String id;

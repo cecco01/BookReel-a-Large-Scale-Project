@@ -11,7 +11,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class BooksCreationDto extends MediaCreationDto {
     @NotBlank
-    private int chapters;
+    private int numPages;
 
     @NotEmpty
     private List<String> authors;

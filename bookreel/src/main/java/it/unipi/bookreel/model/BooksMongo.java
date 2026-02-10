@@ -10,7 +10,7 @@ import java.util.List;
 @Document(collection = "books")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class LibriMongo extends MediaMongo {
+public class BooksMongo extends MediaMongo {
     @NotBlank
     private int numPages;
 
