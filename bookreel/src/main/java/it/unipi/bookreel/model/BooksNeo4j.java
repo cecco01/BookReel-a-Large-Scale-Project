@@ -18,8 +18,8 @@ public class BooksNeo4j {
     @Property("name")
     private String name;
 
-    @Property("status")
-    private MediaStatus status;
+    //@Property("status")
+    //private MediaStatus status;
 
     @Property("genres")
     private List<String> genres;

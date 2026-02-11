@@ -43,5 +43,5 @@ public class UserMongo {
     @Past(message = "Birthdate must be in the past")
     private Date birthdate;
 
-    private Date createdAt;//cosa serve? 
+    private Date createdAt;
 }

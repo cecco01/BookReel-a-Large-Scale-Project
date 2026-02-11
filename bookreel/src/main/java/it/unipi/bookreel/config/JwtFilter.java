@@ -40,7 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         // authentication should be null at this point
-        // autenticazione dovrebbe essere null a questo punto
+        // autenticazione dovrebbe valere null a questo punto
         if (userId != null && JwtUtils.validateToken(token)) {
             UserMongo user = context.getBean(MyUserDetailsService.class).loadUserById(userId);
             UserPrincipal userPrincipal = new UserPrincipal(user);
