@@ -15,4 +15,6 @@ public class BooksMongo extends MediaMongo {
     private int numPages;
 
     private List<String> authors;
+
+    private List<String> publishers;
 }

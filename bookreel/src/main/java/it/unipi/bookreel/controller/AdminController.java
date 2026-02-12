@@ -61,8 +61,8 @@ public class AdminController {
         return ResponseEntity.ok(userService.getUserById(userId, false));
     }
 
-    /* ================================ ANALYTICS ================================ 
-NON COMPLETO, BISOGNA VEDERE QUALI ANALYTICS VOGLIOMO METTERE, QUALI LASCIARE O CAMBIARE
+    /* ================================ ANALYTICS ================================ */
+
     @GetMapping("/analytics/monthlyregistrations")
     public ResponseEntity<List<MonthAnalytic>> getMonthlyRegistrations() {
         return ResponseEntity.ok(analyticsService.getMonthlyRegistrations());
@@ -107,6 +107,6 @@ NON COMPLETO, BISOGNA VEDERE QUALI ANALYTICS VOGLIOMO METTERE, QUALI LASCIARE O 
     public ResponseEntity<List<MediaInListsAnalyticDto>> getMediaInLists(@PathVariable MediaType mediaType, @PathVariable String mediaId) {
         return ResponseEntity.ok(analyticsService.getMediaInLists(mediaType, mediaId));
 
-    } */
+    } 
 }
 

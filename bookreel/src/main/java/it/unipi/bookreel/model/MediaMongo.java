@@ -19,22 +19,16 @@ public abstract class MediaMongo {
     @NotBlank
     private String name;
 
-    //@NotBlank
-    //private MediaStatus status;
-
     @NotBlank
     private int sumScores = 0;
 
-    private int numScores = 0;
+    private int numScores = 0; //numero di recensioni
 
     @NotBlank
     private List<String> genres;
 
     @NotEmpty
     private String type;
-
-    @NotEmpty
-    private String synopsis;
 
     private List<ReviewDto> reviews;
 }

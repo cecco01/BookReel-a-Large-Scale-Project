@@ -14,6 +14,9 @@ public class BooksUpdateDto extends MediaUpdateDto {
 
     @NotEmpty
     private List<String> authors;
+
+    @NotEmpty
+    private List<String> publishers;
 }
 
 

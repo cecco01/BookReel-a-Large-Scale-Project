@@ -11,8 +11,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class FilmsCreationDto extends MediaCreationDto {
 
-    @NotEmpty
-    private String source;
+   // @NotEmpty
+   // private String source;
 
     @NotEmpty
     private double duration;

@@ -11,9 +11,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class FilmsMongo extends MediaMongo{
-    @NotBlank
-
-    private String director;
+    
 
     private double duration;
 

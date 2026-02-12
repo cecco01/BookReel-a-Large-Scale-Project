@@ -11,8 +11,8 @@ import java.util.List;
 @SuperBuilder
 public class FilmsDetailsDto extends MediaDetailsDto {
 
-    @NotEmpty
-    private String source;
+    //@NotEmpty
+    // private String source;
 
     @NotEmpty
     private double duration;

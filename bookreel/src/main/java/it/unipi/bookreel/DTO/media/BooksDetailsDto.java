@@ -11,6 +11,8 @@ public class BooksDetailsDto extends MediaDetailsDto {
     private int numPages;
 
     private List<String> authors;
+
+    private List<String> publishers;
 }
 
 

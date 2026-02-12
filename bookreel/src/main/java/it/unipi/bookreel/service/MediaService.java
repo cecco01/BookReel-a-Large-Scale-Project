@@ -54,28 +54,25 @@ public class MediaService {
 
         if (mediaType == MediaType.Books) {
             BooksMongo Books = (BooksMongo) media;
-            return BooksDetailsDto.builder()
+            return BooksDetailsDto.builder() //mancano attributi!
                     .name(Books.getName())
                     .status(Books.getStatus())
                     .avgScore(Books.getNumScores() == 0 ? 0 : (double) Books.getSumScores() / Books.getNumScores())
                     .genres(Books.getGenres())
-                    .synopsis(Books.getSynopsis())
                     .type(Books.getType())
-                    .chapters(Books.getChapters())
+                    //.chapters(Books.getChapters()) deve esseci numpag
                     .authors(Books.getAuthors())
                     .reviews(Books.getReviews())
                     .build();
         } else {
             FilmsMongo Films = (FilmsMongo) media;
-            return FilmsDetailsDto.builder()
+            return FilmsDetailsDto.builder() //mancono attributi!
                     .name(Films.getName())
                     .status(Films.getStatus())
                     .avgScore(Films.getNumScores() == 0 ? 0 : (double) Films.getSumScores() / Films.getNumScores())
                     .genres(Films.getGenres())
-                    .synopsis(Films.getSynopsis())
                     .type(Films.getType())
-                    .episodes(Films.getEpisodes())
-                    .source(Films.getSource())
+                    //.source(Films.getSource())
                     .duration(Films.getDuration())
                     .studios(Films.getStudios())
                     .reviews(Films.getReviews())
@@ -109,7 +106,7 @@ public class MediaService {
             newBooksMongo.setGenres(BooksCreationDto.getGenres());
             newBooksMongo.setType(BooksCreationDto.getType());
             newBooksMongo.setAuthors(BooksCreationDto.getAuthors());
-            newBooksMongo.setSynopsis(BooksCreationDto.getSynopsis());
+            //newBooksMongo.setSynopsis(BooksCreationDto.getSynopsis());
             BooksMongoRepository.save(newBooksMongo);
 
             return "Successfully added Books";
@@ -131,10 +128,10 @@ public class MediaService {
             newFilmsMongo.setNumScores(0);
             newFilmsMongo.setGenres(FilmsCreationDto.getGenres());
             newFilmsMongo.setType(FilmsCreationDto.getType());
-            newFilmsMongo.setSource(FilmsCreationDto.getSource());
+            //newFilmsMongo.setSource(FilmsCreationDto.getSource());
             newFilmsMongo.setDuration(FilmsCreationDto.getDuration());
             newFilmsMongo.setStudios(FilmsCreationDto.getStudios());
-            newFilmsMongo.setSynopsis(FilmsCreationDto.getSynopsis());
+            //newFilmsMongo.setSynopsis(FilmsCreationDto.getSynopsis());
             FilmsMongoRepository.save(newFilmsMongo);
             return "Successfully added Films";
         }
