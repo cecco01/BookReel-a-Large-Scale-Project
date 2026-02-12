@@ -16,7 +16,7 @@ public interface BooksNeo4jRepository extends Neo4jRepository<BooksNeo4j, String
             WITH Books, relationship,
                  CASE
                      WHEN relationship.progress = 0 THEN 'PLANNED'
-                     WHEN relationship.progress = Books.numChapterss AND Books.status = 'COMPLETE' THEN 'COMPLETED'
+                     WHEN relationship.progress = Books.numChapters AND Books.status = 'COMPLETE' THEN 'COMPLETED'
                      ELSE 'IN_PROGRESS'
                  END AS listType
             WITH  Books, listType, count(DISTINCT relationship) AS listCount
@@ -31,7 +31,7 @@ public interface BooksNeo4jRepository extends Neo4jRepository<BooksNeo4j, String
             WITH Books, relationship,
                  CASE
                      WHEN relationship.progress = 0 THEN 'PLANNED'
-                     WHEN relationship.progress = Books.numChapterss AND Books.status = 'COMPLETE' THEN 'COMPLETED'
+                     WHEN relationship.progress = Books.numChapters AND Books.status = 'COMPLETE' THEN 'COMPLETED'
                      ELSE 'IN_PROGRESS'
                  END AS listType
             WITH  Books, listType, count(DISTINCT relationship) AS listCount

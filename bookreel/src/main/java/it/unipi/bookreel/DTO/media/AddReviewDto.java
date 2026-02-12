@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 public class AddReviewDto {
-    @NotBlank @Min(1) @Max(10)
+    @NotBlank @Min(1) @Max(5)
     private int score;
     @NotEmpty
     private String comment;

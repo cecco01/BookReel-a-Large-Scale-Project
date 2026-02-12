@@ -30,5 +30,8 @@ public abstract class MediaMongo {
     @NotEmpty
     private String type;
 
+    @NotEmpty
+    private String synopsis;
+
     private List<ReviewDto> reviews;
 }

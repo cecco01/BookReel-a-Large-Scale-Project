@@ -17,7 +17,7 @@ public class BooksCreationDto extends MediaCreationDto {
     private List<String> authors;
 
     @NotEmpty
-    private List<String> publisher;
+    private List<String> publishers;
 }
 
 //nel caso mettere anche il genere e altri attributi specifici dei libri

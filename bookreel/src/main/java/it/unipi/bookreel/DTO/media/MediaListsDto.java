@@ -4,6 +4,6 @@ import java.util.List;
 
 public record MediaListsDto (
      List<ListElementDto> plannedList,
-     List<ListElementDto> inProgressList,
+     List<ListElementDto> likeList,
      List<ListElementDto> completedList
 ) {}

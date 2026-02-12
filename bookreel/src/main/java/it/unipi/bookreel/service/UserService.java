@@ -151,7 +151,7 @@ public class UserService {
             if (element.getProgress() == 0) {
                 mediaLists.plannedList().add(element);
             } else if (element.getProgress() < element.getTotal() || element.getStatus() != MediaStatus.COMPLETE) {
-                mediaLists.inProgressList().add(element);
+                mediaLists.likeList().add(element);// qua serve gestire l'if in modo coerente, senza usare progress!!
             } else {
                 mediaLists.completedList().add(element);
             }
@@ -164,6 +164,9 @@ public class UserService {
             maxAttempts = 3,
             backoff = @Backoff(delay = 2000)
     )
+
+
+//questa si può usare per aggiungere un media alla lista utente
     public String addMediaToUserList(String userId, String mediaId, MediaType mediaType) {
         userNeo4jRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));

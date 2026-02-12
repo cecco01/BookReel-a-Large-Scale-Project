@@ -54,7 +54,7 @@ public class MediaService {
 
         if (mediaType == MediaType.Books) {
             BooksMongo Books = (BooksMongo) media;
-            return BooksDetailsDto.builder() //mancano attributi!
+            return BooksDetailsDto.builder() //**entrambe le cose: ci sono attributi extra, controlla anche se ci amncano degli attributi!
                     .name(Books.getName())
                     .status(Books.getStatus())
                     .avgScore(Books.getNumScores() == 0 ? 0 : (double) Books.getSumScores() / Books.getNumScores())
@@ -66,7 +66,7 @@ public class MediaService {
                     .build();
         } else {
             FilmsMongo Films = (FilmsMongo) media;
-            return FilmsDetailsDto.builder() //mancono attributi!
+            return FilmsDetailsDto.builder() //come sopra!! **
                     .name(Films.getName())
                     .status(Films.getStatus())
                     .avgScore(Films.getNumScores() == 0 ? 0 : (double) Films.getSumScores() / Films.getNumScores())
@@ -106,7 +106,7 @@ public class MediaService {
             newBooksMongo.setGenres(BooksCreationDto.getGenres());
             newBooksMongo.setType(BooksCreationDto.getType());
             newBooksMongo.setAuthors(BooksCreationDto.getAuthors());
-            //newBooksMongo.setSynopsis(BooksCreationDto.getSynopsis());
+            newBooksMongo.setSynopsis(BooksCreationDto.getSynopsis());
             BooksMongoRepository.save(newBooksMongo);
 
             return "Successfully added Books";
@@ -131,7 +131,7 @@ public class MediaService {
             //newFilmsMongo.setSource(FilmsCreationDto.getSource());
             newFilmsMongo.setDuration(FilmsCreationDto.getDuration());
             newFilmsMongo.setStudios(FilmsCreationDto.getStudios());
-            //newFilmsMongo.setSynopsis(FilmsCreationDto.getSynopsis());
+            newFilmsMongo.setSynopsis(FilmsCreationDto.getSynopsis());
             FilmsMongoRepository.save(newFilmsMongo);
             return "Successfully added Films";
         }
