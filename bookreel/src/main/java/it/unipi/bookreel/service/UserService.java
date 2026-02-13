@@ -56,7 +56,7 @@ public class UserService {
         if (!checkPrivacyStatus) {
             return userNoPwdDto;
         }
-        return canReturnPrivateDetails(user) ? userNoPwdDto : new UserNoPwdDto(user.getUsername(), null, null, null);
+        return canReturnPrivateDetails(user) ? userNoPwdDto : new UserNoPwdDto(user.getUsername(), null, null);
     }
 
     public Slice<UserIdUsernameDto> getUsers(String username, int page, int size) {

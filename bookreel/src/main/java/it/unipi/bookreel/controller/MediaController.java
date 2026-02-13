@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import it.unipi.bookreel.DTO.media.AddReviewDto;
 import it.unipi.bookreel.DTO.media.MediaAverageDto;
 import it.unipi.bookreel.DTO.media.MediaDetailsDto;
-import it.unipi.bookreel.DTO.media.MediaIdNameDto;
 import it.unipi.bookreel.enumerator.MediaType;
 import it.unipi.bookreel.model.UserPrincipal;
 import it.unipi.bookreel.service.MediaService;
@@ -34,7 +33,7 @@ public class MediaController {
             @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "10") @Min(0) @Max(100) int size) {
-        Slice<MediaAverageDto> results = mediaService.browseMedia(mediaType, name, size);
+        Slice<MediaAverageDto> results = mediaService.browseMedia(mediaType, name, page, size);
         if (results.isEmpty()) {
             return ResponseEntity.ok("No media found with this name");
         } else
