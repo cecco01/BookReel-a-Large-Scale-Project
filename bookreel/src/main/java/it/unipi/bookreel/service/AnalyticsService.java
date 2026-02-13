@@ -51,7 +51,7 @@ public class AnalyticsService {
         cal.set(Calendar.YEAR, lastYearCalculated);
         cal.set(Calendar.DAY_OF_YEAR, 1);
         Date firstDay = cal.getTime();
-        List<MonthAnalytic> results = userMongoRepository.findMaxMonthByYearGreaterThan(firstDay);
+        List<MonthAnalytic> results = userMongoRepository.topMonthsByYearSince(firstDay);
         monthAnalyticRepository.saveAll(results);
         return monthAnalyticRepository.findAllByOrderByYear();
     }
@@ -59,27 +59,27 @@ public class AnalyticsService {
 // per ogni media, qual è la variazione di valutazioni (in termini di punteggio medio) rispetto al mese precedente, e quali sono i media più controversi (con la maggiore varianza nelle valutazioni)
     public List<ControversialMediaDto> getControversialMedia(MediaType mediaType) {
         if (mediaType == MediaType.Books) {
-            return BooksMongoRepository.findTopVarianceBooks();
+            return BooksMongoRepository.mostControversialBooks();
         } else {
-            return FilmsMongoRepository.findTopVarianceFilms();
+            return FilmsMongoRepository.mostControversialFilms();
         }
     }
 
 // per ogni media, quali stanno peggiorando in temrini di punteggio
     public List<TrendingMediaDto> getDecliningMedia(MediaType mediaType) {
         if (mediaType == MediaType.Books) {
-            return BooksMongoRepository.findTopDecliningBooks();
+            return BooksMongoRepository.topDecliningBooks();
         } else {
-            return FilmsMongoRepository.findTopDecliningFilms();
+            return FilmsMongoRepository.topDecliningFilms();
         }
     }
 
 // per ogni media, quali stanno migliorando in temrini di punteggio
     public List<TrendingMediaDto> getImprovingMedia(MediaType mediaType) {
         if (mediaType == MediaType.Books) {
-            return BooksMongoRepository.findTopImprovingBooks();
+            return BooksMongoRepository.topImprovingBooks();
         } else {
-            return FilmsMongoRepository.findTopImprovingFilms();
+            return FilmsMongoRepository.topImprovingFilms();
         }
     }
 

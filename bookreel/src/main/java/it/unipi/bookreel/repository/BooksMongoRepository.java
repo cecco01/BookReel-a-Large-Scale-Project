@@ -16,6 +16,8 @@ import java.util.List;
 
 @Repository
 public interface BooksMongoRepository extends MongoRepository<BooksMongo, String> {
+
+    // Restituisce una pagina di libri il cui nome contiene la stringa name, con la media score calcolata
     @Aggregation(pipeline = {
             "{ '$match': { 'name': { $regex: ?0, $options: 'i' } } }",
             "{ '$addFields': { 'averageScore': { $cond: { if: { $eq: ['$numScores', 0] }, then: 0, else: { $divide: ['$sumScores', '$numScores'] } } } } }",
@@ -23,66 +25,88 @@ public interface BooksMongoRepository extends MongoRepository<BooksMongo, String
     })
     Slice<MediaAverageDto> findByNameContaining(String name, Pageable pageable);
 
-    @Query("{ 'reviews.username': ?0 }")
-    @Update("{ '$set': { 'reviews.$.username': ?1 } }")
-    void updateReviewsByUsername(String oldUsername, String newUsername);
+    /*
+        // SERVE????? Aggiorna il nome utente di tutte le recensioni di un dato username con il nuovo username
+        @Query("{ 'reviews.username': ?0 }")
+        @Update("{ '$set': { 'reviews.$.username': ?1 } }")
+        void updateReviewsByUsername(String oldUsername, String newUsername);
+     */
 
+    // Rimuove tutte le recensioni di un dato username da tutti i media
     @Query("{ 'reviews.username': ?0 }")
     @Update("{ '$pull': { 'reviews': { 'username': ?0 } } }")
     void deleteReviewsByUsername(String username);
 
+
+    // Restituisce per ogni genere il libro più controverso considerando i libri con almeno 5 recensioni
     @Aggregation(pipeline = {
-            "{ '$addFields': { 'variance': { '$pow': [{ '$stdDevPop': '$reviews.score' }, 2] } } }",
+            "{ '$match': { '$expr': { '$gte': ['$numScores', 5] } } }",
+            "{ '$addFields': { 'scoreVariance': { '$pow': [{ '$stdDevPop': '$reviews.score' }, 2] } } }",
             "{ '$unwind': '$genres' }",
-            "{ '$sort': { 'genres': 1, 'variance': -1 } }",
+            "{ '$sort': { 'genres': 1, 'scoreVariance': -1 } }",
             "{ '$group': { " +
                     "   '_id': '$genres', " +
-                    "   'Books': { '$first': { 'id': '$_id', 'name': '$name', 'variance': '$variance' } } " +
+                    "   'Books': { '$first': { 'id': '$_id', 'name': '$name', 'scoreVariance': '$scoreVariance' } } " +
                     "} }",
             "{ '$project': { '_id': 0, 'genre': '$_id', 'id': '$Books.id', 'name': '$Books.name' } }"
     })
-    List<ControversialMediaDto> findTopVarianceBooks();
-    @Aggregation(pipeline = {
-            "{ '$addFields': { " +
-                    "   'averageScore': { '$cond': { " +
-                    "       if: { '$gt': ['$numScores', 0] }, " +
-                    "       then: { '$divide': ['$sumScores', '$numScores'] }, " +
-                    "       else: 0 " +
-                    "   } }, " +
-                    "   'reviews': { '$slice': [ { '$sortArray': { 'input': '$reviews', 'sortBy': { 'timestamp': -1 } } }, 5 ] } " +
-                    "} }",
-            "{ '$addFields': { 'recentAverageScore': { '$avg': '$reviews.score' } } }",
-            "{ '$match': { '$expr': { '$lt': ['$recentAverageScore', '$averageScore'] } } }",
-            "{ '$addFields': { 'scoreDifference': { '$subtract': ['$averageScore', '$recentAverageScore'] } } }",
-            "{ '$sort': { 'scoreDifference': -1 } }",
-            "{ '$limit': 10 }",
-            "{ '$project': { '_id': 0, 'id': '$_id', 'name': '$name', 'scoreDifference': 1 } }"
-    })
-    List<TrendingMediaDto> findTopDecliningBooks();
-    @Aggregation(pipeline = {
-            "{ '$addFields': { " +
-                    "   'averageScore': { '$cond': { " +
-                    "       if: { '$gt': ['$numScores', 0] }, " +
-                    "       then: { '$divide': ['$sumScores', '$numScores'] }, " +
-                    "       else: 0 " +
-                    "   } }, " +
-                    "   'reviews': { '$slice': [ { '$sortArray': { 'input': '$reviews', 'sortBy': { 'timestamp': -1 } } }, 5 ] } " +
-                    "} }",
-            "{ '$addFields': { 'recentAverageScore': { '$avg': '$reviews.score' } } }",
-            "{ '$match': { '$expr': { '$gt': ['$recentAverageScore', '$averageScore'] } } }",
-            "{ '$addFields': { 'scoreDifference': { '$subtract': ['$recentAverageScore', '$averageScore'] } } }",
-            "{ '$sort': { 'scoreDifference': -1 } }",
-            "{ '$limit': 10 }",
-            "{ '$project': { '_id': 0, 'id': '$_id', 'name': '$name', 'scoreDifference': 1 } }"
-    })
-    List<TrendingMediaDto> findTopImprovingBooks();
+    List<ControversialMediaDto> mostControversialBooks();
 
+
+    // Restituisce i 10 libri in maggior declino considerando la differenza tra punteggio medio totale e punteggio medio delle ultime 5 recensioni
     @Aggregation(pipeline = {
-            "{ '$match': { '$expr': { '$or': [ { '$eq': [?0, null] }, { '$in': [?0, '$genres'] } ] } } }",
-            "{ '$addFields': { 'averageScore': { '$cond': { if: { '$gt': ['$numScores', 0] }, then: { '$divide': ['$sumScores', '$numScores'] }, else: 0 } } } }",
-            "{ '$sort': { 'averageScore': -1 } }",
+            "{ '$addFields': { " +
+                    "   'totalAvgScore': { '$cond': { " +
+                    "       if: { '$gt': ['$numScores', 0] }, " +
+                    "       then: { '$divide': ['$sumScores', '$numScores'] }, " +
+                    "       else: 0 " +
+                    "   } }, " +
+                    "   'reviews': { '$slice': [ { '$sortArray': { 'input': '$reviews', 'sortBy': { 'timestamp': -1 } } }, 5 ] } " +
+                    "} }",
+            "{ '$addFields': { 'recentAvgScore': { '$avg': '$reviews.score' } } }",
+            "{ '$match': { '$expr': { '$lt': ['$recentAvgScore', '$totalAvgScore'] } } }",
+            "{ '$addFields': { 'declineScore': { '$subtract': ['$totalAvgScore', '$recentAvgScore'] } } }",
+            "{ '$sort': { 'declineScore': -1 } }",
             "{ '$limit': 10 }",
-            "{ '$project': { 'id': 1, 'name': 1, 'averageScore': 1 } }"
+            "{ '$project': { '_id': 0, 'id': '$_id', 'name': '$name', 'declineScore': 1 } }"
     })
-    List<MediaAverageDto> findTop10Books(String genre);
+    List<TrendingMediaDto> topDecliningBooks();
+
+
+    // Restituisce i 10 libri in maggior miglioramento considerando la differenza tra punteggio medio totale e punteggio medio delle ultime 5 recensioni
+    @Aggregation(pipeline = {
+            "{ '$addFields': { " +
+                    "   'totalAvgScore': { '$cond': { " +
+                    "       if: { '$gt': ['$numScores', 0] }, " +
+                    "       then: { '$divide': ['$sumScores', '$numScores'] }, " +
+                    "       else: 0 " +
+                    "   } }, " +
+                    "   'reviews': { '$slice': [ { '$sortArray': { 'input': '$reviews', 'sortBy': { 'timestamp': -1 } } }, 5 ] } " +
+                    "} }",
+            "{ '$addFields': { 'recentAvgScore': { '$avg': '$reviews.score' } } }",
+            "{ '$match': { '$expr': { '$gt': ['$recentAvgScore', '$totalAvgScore'] } } }",
+            "{ '$addFields': { 'improvementScore': { '$subtract': ['$recentAvgScore', '$totalAvgScore'] } } }",
+            "{ '$sort': { 'improvementScore': -1 } }",
+            "{ '$limit': 10 }",
+            "{ '$project': { '_id': 0, 'id': '$_id', 'name': '$name', 'improvementScore': 1 } }"
+    })
+    List<TrendingMediaDto> topImprovingBooks();
+
+
+    // Restituisce i 3 libri con punteggio medio più alto, filtrando opzionalmente per genere
+    @Aggregation(pipeline = {
+            "{ '$addFields': { " +
+                    "   'calculatedAvg': { '$cond': { " +
+                    "       if: { '$gt': ['$numScores', 0] }, " +
+                    "       then: { '$divide': ['$sumScores', '$numScores'] }, " +
+                    "       else: 0 " +
+                    "   } } " +
+                    "} }",
+            // Filtra per genere solo se fornito
+            "{ '$match': { '$expr': { '$or': [ { '$eq': [?0, null] }, { '$in': [?0, '$genres'] } ] } } }",
+            "{ '$sort': { 'calculatedAvg': -1 } }",
+            "{ '$limit': 3 }",
+            "{ '$project': { 'id': 1, 'name': 1, 'calculatedAvg': 1 } }"
+    })
+    List<MediaAverageDto> top3BooksByAverage(String genre);
 }

@@ -39,11 +39,11 @@ public class RecommendationService {
         return userNeo4jRepository.findPopularMediaAmongFollows(mediaType.toString(), userId);
     }
 
-    public List<MediaAverageDto> getTop10Media(MediaType mediaType, String genre) {
+    public List<MediaAverageDto> getTop3Media(MediaType mediaType, String genre) {
         if (mediaType == MediaType.Films) {
-            return FilmsMongoRepository.findTop10Films(genre);
+            return FilmsMongoRepository.top3FilmsByAverage(genre);
         } else {
-            return BooksMongoRepository.findTop10Books(genre);
+            return BooksMongoRepository.top3BooksByAverage(genre);
         }
     }
 }

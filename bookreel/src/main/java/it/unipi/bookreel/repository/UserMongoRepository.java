@@ -16,31 +16,47 @@ import java.util.List;
 
 @Repository
 public interface UserMongoRepository extends MongoRepository<UserMongo, String> {
+
+    // Ricerca utenti per username
     @Query("{ 'username': { $regex: ?0, $options: 'i' } }")
     Slice<UserIdUsernameDto> findByUsernameContaining(String username, Pageable pageable);
 
+
+    // Trova utente data l'email
     UserMongo findByEmail(String email);
 
+
+    // Verifica se esiste un utente con l'email fornita
     boolean existsByEmail(String email);
 
+
+    // Verifica se esiste un utente con l'username fornito
     boolean existsByUsername(String username);
 
+
+    // CONTROLLARE
     @Update("{ $addToSet: { followers: ?1 } }")
     void findAndPushFollowerById(String id, String followerId);
 
+
+    // CONTROLLARE
     @Update("{ $pull: { followers: ?1 } }")
     void findAndPullFollowerById(String id, String followerId);
 
+
+    // CONTROLLARE
     @Query("{ 'followers': ?0 }")
     @Update("{ $pull: { followers: ?0 } }")
     void deleteUserFromFollowers(String id);
 
+
+    // Restituisce per ogni anno il mese con il maggior numero di utenti creati a partire da una certa data
     @Aggregation(pipeline = {
             "{ '$match': { 'createdAt': { '$gte': ?0 } } }",
-            "{ '$group': { '_id': { 'year': { '$year': '$createdAt' }, 'month': { '$month': '$createdAt' } }, 'count': { '$sum': 1 } } }",
-            "{ '$sort': { '_id.year': 1, 'count': -1 } }",
-            "{ '$group': { '_id': '$_id.year', 'maxMonth': { '$first': { 'month': '$_id.month', 'count': '$count' } } } }",
-            "{ '$project': { '_id': 0, 'year': '$_id', 'month': '$maxMonth.month', 'count': '$maxMonth.count' } }"
+            "{ '$group': { '_id': { 'anno': { '$year': '$createdAt' }, 'mese': { '$month': '$createdAt' } }, 'totaleUtenti': { '$sum': 1 } } }",
+            "{ '$sort': { '_id.anno': 1, 'totaleUtenti': -1 } }",
+            "{ '$group': { '_id': '$_id.anno', 'meseTop': { '$first': { 'mese': '$_id.mese', 'conteggio': '$totaleUtenti' } } } }",
+            "{ '$project': { '_id': 0, 'anno': '$_id', 'mese': '$meseTop.mese', 'conteggio': '$meseTop.conteggio' } }"
     })
-    List<MonthAnalytic> findMaxMonthByYearGreaterThan(Date year);
+    List<MonthAnalytic> topMonthsByYearSince(Date fromDate);
 }

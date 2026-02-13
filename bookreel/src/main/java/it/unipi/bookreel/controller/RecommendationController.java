@@ -36,8 +36,8 @@ public class RecommendationController {
         return ResponseEntity.ok(recommendationService.getPopularMediaAmongFollows(mediaType, user.getUser().getId()));
     }
 
-    @GetMapping("/top10media/{mediaType}")
-    public ResponseEntity<List<MediaAverageDto>> getTop10Media(@PathVariable MediaType mediaType, @RequestParam(required = false) String genre) {
-        return ResponseEntity.ok(recommendationService.getTop10Media(mediaType, genre));
+    @GetMapping("/top3media/{mediaType}")
+    public ResponseEntity<List<MediaAverageDto>> getTop3Media(@PathVariable MediaType mediaType, @RequestParam(required = false) String genre) {
+        return ResponseEntity.ok(recommendationService.getTop3Media(mediaType, genre));
     }
 }
