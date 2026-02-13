@@ -54,28 +54,28 @@ public class MediaService {
 
         if (mediaType == MediaType.Books) {
             BooksMongo Books = (BooksMongo) media;
-            return BooksDetailsDto.builder() //**entrambe le cose: ci sono attributi extra, controlla anche se ci amncano degli attributi!
+            return BooksDetailsDto.builder()
                     .name(Books.getName())
-                    .status(Books.getStatus())
                     .avgScore(Books.getNumScores() == 0 ? 0 : (double) Books.getSumScores() / Books.getNumScores())
                     .genres(Books.getGenres())
                     .type(Books.getType())
-                    //.chapters(Books.getChapters()) deve esseci numpag
-                    .authors(Books.getAuthors())
+                    .synopsis(Books.getSynopsis())
                     .reviews(Books.getReviews())
+                    .numPages(Books.getNumPages())
+                    .authors(Books.getAuthors())
+                    .publishers(Books.getPublishers())
                     .build();
         } else {
             FilmsMongo Films = (FilmsMongo) media;
-            return FilmsDetailsDto.builder() //come sopra!! **
+            return FilmsDetailsDto.builder()
                     .name(Films.getName())
-                    .status(Films.getStatus())
                     .avgScore(Films.getNumScores() == 0 ? 0 : (double) Films.getSumScores() / Films.getNumScores())
                     .genres(Films.getGenres())
                     .type(Films.getType())
-                    //.source(Films.getSource())
+                    .synopsis(Films.getSynopsis())
+                    .reviews(Films.getReviews())
                     .duration(Films.getDuration())
                     .studios(Films.getStudios())
-                    .reviews(Films.getReviews())
                     .build();
         }
     }
@@ -91,21 +91,19 @@ public class MediaService {
             BooksNeo4j newBooksNeo4j = new BooksNeo4j();
             newBooksNeo4j.setId(mediaId);
             newBooksNeo4j.setName(BooksCreationDto.getName());
-            newBooksNeo4j.setStatus(BooksCreationDto.getStatus());
-            newBooksNeo4j.setChapters(BooksCreationDto.getChapters());
             newBooksNeo4j.setGenres(BooksCreationDto.getGenres());
             BooksNeo4jRepository.save(newBooksNeo4j);
 
             BooksMongo newBooksMongo = new BooksMongo();
             newBooksMongo.setId(mediaId);
             newBooksMongo.setName(BooksCreationDto.getName());
-            newBooksMongo.setStatus(BooksCreationDto.getStatus());
-            newBooksMongo.setChapters(BooksCreationDto.getChapters());
             newBooksMongo.setSumScores(0);
             newBooksMongo.setNumScores(0);
             newBooksMongo.setGenres(BooksCreationDto.getGenres());
             newBooksMongo.setType(BooksCreationDto.getType());
+            newBooksMongo.setNumPages(BooksCreationDto.getNumPages());
             newBooksMongo.setAuthors(BooksCreationDto.getAuthors());
+            newBooksMongo.setPublishers(BooksCreationDto.getPublishers());
             newBooksMongo.setSynopsis(BooksCreationDto.getSynopsis());
             BooksMongoRepository.save(newBooksMongo);
 

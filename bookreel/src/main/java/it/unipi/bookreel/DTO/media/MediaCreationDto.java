@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 public abstract class MediaCreationDto {
     @NotBlank
-    private MediaType mediaType;
+    private MediaType type;
 
     @NotBlank
     private String name;
@@ -25,6 +25,4 @@ public abstract class MediaCreationDto {
     private List<String> genres;
 
     private String synopsis;
-
-    private String type;
 }

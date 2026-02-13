@@ -11,9 +11,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class FilmsUpdateDto extends MediaUpdateDto {
 
-    // @NotEmpty
-    // private String source;
-
     @NotEmpty
     private double duration;
 

@@ -17,7 +17,7 @@ import java.util.List;
 @Data
 public abstract class MediaUpdateDto {
     @NotBlank
-    private MediaType mediaType;
+    private MediaType type;
 
     @NotEmpty
     private String name;
@@ -27,7 +27,4 @@ public abstract class MediaUpdateDto {
 
     @NotEmpty
     private String synopsis;
-
-    @NotEmpty
-    private String type;
 }

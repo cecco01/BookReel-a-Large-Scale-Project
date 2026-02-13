@@ -2,6 +2,7 @@ package it.unipi.bookreel.DTO.media;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import it.unipi.bookreel.enumerator.MediaType;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -18,7 +19,7 @@ public abstract class MediaDetailsDto {
 
     private String synopsis;
 
-    private String type;
+    private MediaType type;
 
     private List<ReviewDto> reviews;
 }
