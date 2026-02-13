@@ -1,7 +1,7 @@
 package it.unipi.bookreel.model;
 
 import it.unipi.bookreel.DTO.media.ReviewDto;
-import it.unipi.bookreel.enumerator.MediaStatus;
+import it.unipi.bookreel.enumerator.MediaType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
@@ -28,7 +28,7 @@ public abstract class MediaMongo {
     private List<String> genres;
 
     @NotEmpty
-    private String type;
+    private MediaType type;
 
     @NotEmpty
     private String synopsis;

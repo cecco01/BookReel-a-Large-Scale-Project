@@ -3,10 +3,6 @@ package it.unipi.bookreel.DTO.user;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Past;
-
-import java.time.LocalDate;
-import java.util.Date;
 
 public record UserRegistrationDto(
         @NotBlank
@@ -16,8 +12,6 @@ public record UserRegistrationDto(
         String password,
         @NotBlank
         @Email
-        String email,
-        @Past
-        Date birthdate
+        String email
 ) {
 }

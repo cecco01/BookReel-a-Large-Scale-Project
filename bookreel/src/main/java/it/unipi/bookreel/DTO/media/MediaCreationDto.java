@@ -2,7 +2,6 @@ package it.unipi.bookreel.DTO.media;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import it.unipi.bookreel.enumerator.MediaStatus;
 import it.unipi.bookreel.enumerator.MediaType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -21,9 +20,6 @@ public abstract class MediaCreationDto {
 
     @NotBlank
     private String name;
-
-    @NotBlank
-    private MediaStatus status;
 
     @NotBlank
     private List<String> genres;

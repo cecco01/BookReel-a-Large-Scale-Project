@@ -21,9 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionSystemException;
 
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -67,7 +64,6 @@ public class AuthService {
         newUserMongo.setUsername(user.username());
         newUserMongo.setPassword(encoder.encode(user.password()));
         newUserMongo.setEmail(user.email());
-        newUserMongo.setBirthdate(user.birthdate());
         newUserMongo.setRole("USER");
         newUserMongo.setCreatedAt(new Date());
         newUserMongo.setPrivacyStatus(PrivacyStatus.ALL);

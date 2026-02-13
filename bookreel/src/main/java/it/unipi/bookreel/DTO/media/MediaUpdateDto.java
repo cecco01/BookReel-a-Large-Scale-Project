@@ -2,7 +2,6 @@ package it.unipi.bookreel.DTO.media;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import it.unipi.bookreel.enumerator.MediaStatus;
 import it.unipi.bookreel.enumerator.MediaType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -22,9 +21,6 @@ public abstract class MediaUpdateDto {
 
     @NotEmpty
     private String name;
-
-    @NotEmpty
-    private MediaStatus status;
 
     @NotEmpty
     private List<String> genres;

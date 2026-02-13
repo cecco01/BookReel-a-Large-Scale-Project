@@ -3,7 +3,6 @@ package it.unipi.bookreel.service;
 import it.unipi.bookreel.DTO.media.MediaListsDto;
 import it.unipi.bookreel.DTO.user.*;
 import it.unipi.bookreel.DTO.media.ListElementDto;
-import it.unipi.bookreel.enumerator.MediaStatus;
 import it.unipi.bookreel.enumerator.MediaType;
 import it.unipi.bookreel.model.UserMongo;
 import it.unipi.bookreel.model.UserNeo4j;
@@ -24,10 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionSystemException;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -55,7 +51,7 @@ public class UserService {
         UserMongo user = userMongoRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + id));
 
-        UserNoPwdDto userNoPwdDto = new UserNoPwdDto(user.getUsername(), user.getEmail(), user.getBirthdate(), user.getPrivacyStatus());
+        UserNoPwdDto userNoPwdDto = new UserNoPwdDto(user.getUsername(), user.getEmail(), user.getPrivacyStatus());
 
         if (!checkPrivacyStatus) {
             return userNoPwdDto;
@@ -92,9 +88,6 @@ public class UserService {
             }
             user.setEmail(updates.email());
         }
-        if (updates.birthdate() != null) {
-            user.setBirthdate(updates.birthdate());
-        }
         if (updates.privacyStatus() != null) {
             user.setPrivacyStatus(updates.privacyStatus());
             userNeo4j.setPrivacyStatus(user.getPrivacyStatus());
@@ -108,7 +101,7 @@ public class UserService {
             BooksMongoRepository.updateReviewsByUsername(user.getUsername(), updates.username());
         }
 
-        return new UserNoPwdDto(user.getUsername(), user.getEmail(), user.getBirthdate(), user.getPrivacyStatus());
+        return new UserNoPwdDto(user.getUsername(), user.getEmail(), user.getPrivacyStatus());
     }
 
     @Retryable(
@@ -124,7 +117,7 @@ public class UserService {
         BooksMongoRepository.deleteReviewsByUsername(user.getUsername());
         userMongoRepository.deleteUserFromFollowers(user.getId());
 
-        return new UserNoPwdDto(user.getUsername(), user.getEmail(), user.getBirthdate(), user.getPrivacyStatus());
+        return new UserNoPwdDto(user.getUsername(), user.getEmail(), user.getPrivacyStatus());
     }
 
     /* ================================ LISTS CRUD ================================ */
@@ -150,7 +143,7 @@ public class UserService {
             System.out.println(element);
             if (element.getProgress() == 0) {
                 mediaLists.plannedList().add(element);
-            } else if (element.getProgress() < element.getTotal() || element.getStatus() != MediaStatus.COMPLETE) {
+            } else if (element.getProgress() < element.getTotal()) {
                 mediaLists.likeList().add(element);// qua serve gestire l'if in modo coerente, senza usare progress!!
             } else {
                 mediaLists.completedList().add(element);

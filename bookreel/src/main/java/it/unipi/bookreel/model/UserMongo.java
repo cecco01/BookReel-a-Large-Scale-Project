@@ -40,8 +40,6 @@ public class UserMongo {
 
     private List<String> followers;
 
-    @Past(message = "Birthdate must be in the past")
-    private Date birthdate;
-
+    @Indexed(unique = true)
     private Date createdAt;
 }

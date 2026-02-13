@@ -52,7 +52,7 @@ public class UserController {
     public ResponseEntity<UserNoPwdDto> getUser() {
         UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserMongo userMongo = user.getUser();
-        UserNoPwdDto userNoPwdDto = new UserNoPwdDto(userMongo.getUsername(), userMongo.getEmail(), userMongo.getBirthdate(), userMongo.getPrivacyStatus());
+        UserNoPwdDto userNoPwdDto = new UserNoPwdDto(userMongo.getUsername(), userMongo.getEmail(), userMongo.getPrivacyStatus());
         return ResponseEntity.ok(userNoPwdDto);
     }
 
