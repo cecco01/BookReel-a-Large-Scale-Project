@@ -112,21 +112,16 @@ public class MediaService {
             FilmsNeo4j newFilmsNeo4j = new FilmsNeo4j();
             newFilmsNeo4j.setId(mediaId);
             newFilmsNeo4j.setName(FilmsCreationDto.getName());
-            newFilmsNeo4j.setStatus(FilmsCreationDto.getStatus());
-            newFilmsNeo4j.setEpisodes(FilmsCreationDto.getEpisodes());
             newFilmsNeo4j.setGenres(FilmsCreationDto.getGenres());
             FilmsNeo4jRepository.save(newFilmsNeo4j);
 
             FilmsMongo newFilmsMongo = new FilmsMongo();
             newFilmsMongo.setId(mediaId);
             newFilmsMongo.setName(FilmsCreationDto.getName());
-            newFilmsMongo.setStatus(FilmsCreationDto.getStatus());
-            newFilmsMongo.setEpisodes(FilmsCreationDto.getEpisodes());
             newFilmsMongo.setSumScores(0);
             newFilmsMongo.setNumScores(0);
             newFilmsMongo.setGenres(FilmsCreationDto.getGenres());
             newFilmsMongo.setType(FilmsCreationDto.getType());
-            //newFilmsMongo.setSource(FilmsCreationDto.getSource());
             newFilmsMongo.setDuration(FilmsCreationDto.getDuration());
             newFilmsMongo.setStudios(FilmsCreationDto.getStudios());
             newFilmsMongo.setSynopsis(FilmsCreationDto.getSynopsis());
@@ -152,23 +147,18 @@ public class MediaService {
                 targetMongo.setName(BooksUpdateDto.getName());
                 targetNeo4j.setName(BooksUpdateDto.getName());
             }
-            if (BooksUpdateDto.getStatus() != null) {
-                targetMongo.setStatus(BooksUpdateDto.getStatus());
-                targetNeo4j.setStatus(BooksUpdateDto.getStatus());
-            }
-            if (BooksUpdateDto.getChapters() != 0) {
-                if(BooksUpdateDto.getChapters() < targetMongo.getChapters()) {
-                    throw new IllegalArgumentException("Cannot decrease number of chapters");
-                }
-                targetMongo.setChapters(BooksUpdateDto.getChapters());
-                targetNeo4j.setChapters(BooksUpdateDto.getChapters());
-            }
             if (BooksUpdateDto.getGenres() != null) {
                 targetMongo.setGenres(BooksUpdateDto.getGenres());
                 targetNeo4j.setGenres(BooksUpdateDto.getGenres());
             }
             if (BooksUpdateDto.getAuthors() != null) {
                 targetMongo.setAuthors(BooksUpdateDto.getAuthors());
+            }
+            if (BooksUpdateDto.getNumPages() != null) {
+                targetMongo.setAuthors(BooksUpdateDto.getNumPages());
+            }
+            if (BooksUpdateDto.getPublishers() != null) {
+                targetMongo.setAuthors(BooksUpdateDto.getPublishers());
             }
             if (BooksUpdateDto.getSynopsis() != null) {
                 targetMongo.setSynopsis(BooksUpdateDto.getSynopsis());
@@ -190,17 +180,6 @@ public class MediaService {
                 targetMongo.setName(FilmsUpdateDto.getName());
                 targetNeo4j.setName(FilmsUpdateDto.getName());
             }
-            if (FilmsUpdateDto.getStatus() != null) {
-                targetMongo.setStatus(FilmsUpdateDto.getStatus());
-                targetNeo4j.setStatus(FilmsUpdateDto.getStatus());
-            }
-            if (FilmsUpdateDto.getEpisodes() != 0) {
-                if(FilmsUpdateDto.getEpisodes() < targetMongo.getEpisodes()) {
-                    throw new IllegalArgumentException("Cannot decrease number of episodes");
-                }
-                targetMongo.setEpisodes(FilmsUpdateDto.getEpisodes());
-                targetNeo4j.setEpisodes(FilmsUpdateDto.getEpisodes());
-            }
             if (FilmsUpdateDto.getGenres() != null) {
                 targetMongo.setGenres(FilmsUpdateDto.getGenres());
                 targetNeo4j.setGenres(FilmsUpdateDto.getGenres());
@@ -210,9 +189,6 @@ public class MediaService {
             }
             if (FilmsUpdateDto.getType() != null) {
                 targetMongo.setType(FilmsUpdateDto.getType());
-            }
-            if (FilmsUpdateDto.getSource() != null) {
-                targetMongo.setSource(FilmsUpdateDto.getSource());
             }
             if (FilmsUpdateDto.getDuration() != 0) {
                 targetMongo.setDuration(FilmsUpdateDto.getDuration());
