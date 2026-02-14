@@ -2,6 +2,7 @@ package it.unipi.bookreel.repository;
 
 import it.unipi.bookreel.DTO.analytic.SCCAnalyticDto;
 import it.unipi.bookreel.DTO.analytic.InfluencersDto;
+import it.unipi.bookreel.DTO.media.LikeElementDto;
 import it.unipi.bookreel.DTO.media.ListElementDto;
 import it.unipi.bookreel.DTO.media.MediaIdNameDto;
 import it.unipi.bookreel.DTO.user.UserIdUsernameDto;
@@ -25,8 +26,8 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
                      WHERE follower.id = $currentUserId
                  })
                )
-             RETURN f.id AS id, f.name AS name, f.duration as duration
-            """) //per il momento sui film ho provato a fare questa poi vediamo se abbiamo altri attributi da proiettare
+             RETURN f.id AS id, f.name AS name, l.progress AS progress
+            """)
     List<ListElementDto> findFilmsListsById(String id, String currentUserId);
 
     @Query("""
@@ -40,56 +41,116 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
                     WHERE follower.id = $currentUserId
                 })
               )
-            RETURN b.id AS id, b.name AS name, b.numPages AS total
-            """)//idem per i libri, vedi qual è il nome esatto per l'attributo numpages
+            RETURN b.id AS id, b.name AS name, l.progress AS progress
+            """)
     List<ListElementDto> findBooksListsById(String id, String currentUserId);
 
-//da modificare visto che non abbiamo progress!!
-@Query("MATCH (u:User {id: $userId})" +
+    @Query("""
+            MATCH (u:User)-[:LIKES]->(f:Films)
+            WHERE u.id = $id
+              AND (
+                $id = $currentUserId OR
+                u.privacyStatus = 'ALL' OR
+                (u.privacyStatus = 'FOLLOWERS' AND exists {
+                    MATCH (follower:User)-[:FOLLOW]->(u)
+                    WHERE follower.id = $currentUserId
+                })
+              )
+            RETURN f.id AS id, f.name AS name
+            """)
+    List<LikeElementDto> findLikedFilmsById(String id, String currentUserId);
+
+    @Query("""
+            MATCH (u:User)-[:LIKES]->(b:Books)
+            WHERE u.id = $id
+              AND (
+                $id = $currentUserId OR
+                u.privacyStatus = 'ALL' OR
+                (u.privacyStatus = 'FOLLOWERS' AND exists {
+                    MATCH (follower:User)-[:FOLLOW]->(u)
+                    WHERE follower.id = $currentUserId
+                })
+              )
+            RETURN b.id AS id, b.name AS name
+            """)
+    List<LikeElementDto> findLikedBooksById(String id, String currentUserId);
+
+    
+    @Query("MATCH (u:User {id: $userId})" +
             " MATCH (f:Films {id: $mediaId})" +
-            " MERGE (u)-[:LIST_ELEMENT {progress: 0}]->(a)" +
+            " MERGE (u)-[r:LIST_ELEMENT]->(f)" +
+            " ON CREATE SET r.progress = 0"+
             " RETURN count(f) > 0")
     boolean addFilmsToList(String userId, String mediaId);
 
 
-//da modificare visto che non abbiamo progress!!
     @Query("MATCH (u:User {id: $userId})" +
             " MATCH (b:Books {id: $mediaId})" +
-            " MERGE (u)-[:LIST_ELEMENT {progress: 0}]->(m)" +
+            " MERGE (u)-[r:LIST_ELEMENT]->(b)" +
+            " ON CREATE SET r.progress = 0"+
             "RETURN count(b) > 0")
     boolean addBooksToList(String userId, String mediaId);
+    
+    @Query("""
+            MATCH (u:User {id: $userId})
+            MATCH (f:Films {id: $mediaId})
+            MERGE (u)-[r:LIKES]->(f)
+            RETURN r IS NOT NULL
+            """)
+    boolean addFilmLike(String userId, String mediaId);
+    
+    @Query("""
+            MATCH (u:User {id: $userId})
+            MATCH (b:Books {id: $mediaId})
+            MERGE (u)-[r:LIKE]->(b)
+            RETURN r IS NOT NULL
+            """)
+    boolean addBookLike(String userId, String mediaId);
 
-//DA FARE COME SWITCH ON OFF
+
     @Query("""
             MATCH (u:User {id: $userId})-[rel:LIST_ELEMENT]->(f:Films {id: $FilmsId})
-            WHERE $episodesWatched <= f.episodes
-            SET rel.progress = $episodesWatched
+            SET rel.progress = $progress
             RETURN COUNT(f) > 0
             """)
-    boolean modifyFilmsInList(String userId, String FilmsId, int episodesWatched);
+    boolean modifyFilmsInList(String userId, String mediaId, int progress);
 
 
-//DA FARE CON SWITCH ON OFF
     @Query("""
             MATCH (u:User {id: $userId})-[rel:LIST_ELEMENT]->(b:Books {id: $BooksId})
-            WHERE $numPag <= b.numPages
-            SET rel.progress = $numPag
+            SET rel.progress = $progress
             RETURN count(b) > 0
             """)
-    boolean modifyBooksInList(String userId, String BooksId, int numPag);
+    boolean modifyBooksInList(String userId, String mediaId, int progress);
 
 
 //rimuove un media "Film" dalla lista dell'utente, non elimina il nodo del media
-    @Query("MATCH (u:User {id: $userId})-[r:LIST_ELEMENT]->(m:Films {id: $mediaId})" +
+    @Query("MATCH (u:User {id: $userId})-[r:LIST_ELEMENT]->(f:Films {id: $mediaId})" +
             " DELETE r" +
-            " RETURN count(a) > 0")
+            " RETURN r IS NOT NULL")
     boolean removeFilmsFromList(String userId, String mediaId);
 
 //rimuove un media "Libro" dalla lista dell'utente, non elimina il nodo del media
     @Query("MATCH (u:User {id: $userId})-[r:LIST_ELEMENT]->(b:Books {id: $mediaId})" +
             " DELETE r" +
-            " RETURN count(m) > 0")
+            " RETURN r IS NOT NULL")
     boolean removeBooksFromList(String userId, String mediaId);
+
+    
+    @Query("""
+            MATCH (u:User {id: $userId})-[r:LIKES]->(f:Films {id: $mediaId})
+            DELETE r
+            RETURN r IS NOT NULL
+            """)
+    boolean removeFilmLike(String userId, String mediaId);
+    
+    
+    @Query("""
+            MATCH (u:User {id: $userId})-[r:LIKES]->(b:Books {id: $mediaId})
+            DELETE r
+            RETURN r IS NOT NULL
+            """)
+    boolean removeBookLike(String userId, String mediaId);
 
 
 //trova tutti gli utenti che seguono l’utente con id in input e che hanno il diritto di visualizzare la lista dei followers in base alla privacy dell’utente stesso
@@ -129,13 +190,13 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
 
 //crea (o mantiene) la relazione FOLLOW tra due utenti (followerId -> followedId) usando MERGE. Restituisce true se trova il nodo seguito (count(f) > 0), quindi se l’operazione ha un target valido.
     @Query("MATCH (u:User {id: $followerId}), (f:User {id: $followedId}) MERGE (u)-[:FOLLOW]->(f)" +
-            " RETURN count(f) > 0")
+            " RETURN r IS NOT NULL")
     boolean followUser(String followerId, String followedId);
 
 
 //elimina la relazione FOLLOW tra followerId e followedId, se esiste. Restituisce true se esisteva il nodo seguito (count(f) > 0), quindi se l’utente target esiste.
     @Query("MATCH (u:User {id: $followerId})-[r:FOLLOW]->(f:User {id: $followedId}) DELETE r" +
-            " RETURN count(f) > 0")
+            " RETURN r IS NOT NULL")
     boolean unfollowUser(String followerId, String followedId);
 
 

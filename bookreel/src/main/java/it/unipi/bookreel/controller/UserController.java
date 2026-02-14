@@ -2,7 +2,6 @@ package it.unipi.bookreel.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.unipi.bookreel.DTO.media.MediaListsDto;
-import it.unipi.bookreel.DTO.user.MediaListUpdateDto;
 import it.unipi.bookreel.DTO.user.UserIdUsernameDto;
 import it.unipi.bookreel.DTO.user.UserNoPwdDto;
 import it.unipi.bookreel.DTO.user.UserUpdateDto;
@@ -93,18 +92,30 @@ public class UserController {
         UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(userService.addMediaToUserList(user.getUser().getId(), mediaId, mediaType));
     }
+    
+    @PostMapping("/user/like/{mediaType}/{mediaId}")
+    public ResponseEntity<String> addLikeToUserList(@PathVariable MediaType mediaType, @PathVariable String mediaId) {
+        UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(userService.addLikeToUserList(user.getUser().getId(), mediaId, mediaType));
+    }
 
 //!!!OCCHIO: modifyMediaInUserList si può togliere se non vogliamo tenere traccia del progresso di lettura/visione dei media, altrimenti bisogna modificare anche altri file per gestire questo aspetto
     @PatchMapping("/user/lists/{mediaType}/{mediaId}") 
-    public ResponseEntity<String> modifyMediaInUserList(@PathVariable MediaType mediaType, @PathVariable String mediaId, @RequestBody MediaListUpdateDto progress) {
+    public ResponseEntity<String> modifyMediaInUserList(@PathVariable MediaType mediaType, @PathVariable String mediaId, @RequestBody int progress) {
         UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok(userService.modifyMediaInUserList(user.getUser().getId(), mediaId, mediaType));
+        return ResponseEntity.ok(userService.modifyMediaInUserList(user.getUser().getId(), mediaId, mediaType, progress));
     }
 
     @DeleteMapping("/user/lists/{mediaType}/{mediaId}")
     public ResponseEntity<String> removeMediaFromUserList(@PathVariable MediaType mediaType, @PathVariable String mediaId) {
         UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(userService.removeMediaFromUserList(user.getUser().getId(), mediaId, mediaType));
+    }
+    
+    @DeleteMapping("/user/like/{mediaType}/{mediaId}")
+    public ResponseEntity<String> removeLikeFromUserList(@PathVariable MediaType mediaType, @PathVariable String mediaId) {
+        UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(userService.removeLikeFromUserList(user.getUser().getId(), mediaId, mediaType));
     }
 
     /* ================================ FOLLOWERS CRUD ================================ */

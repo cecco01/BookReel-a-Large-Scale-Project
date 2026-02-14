@@ -4,6 +4,7 @@ import java.util.List;
 
 public record MediaListsDto (
      List<ListElementDto> plannedList,
-     List<ListElementDto> likeList,
-     List<ListElementDto> completedList
+     List<ListElementDto> completedList,
+     List<LikeElementDto> likeList
+     
 ) {}

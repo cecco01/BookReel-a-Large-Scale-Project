@@ -98,7 +98,7 @@ public class AdminController {
     }
 
     @GetMapping("/analytics/listcounter/{mediaType}")
-    public ResponseEntity<List<ListCounterAnalyticDto>> getnter(@PathVariable MediaType mediaType) {
+    public ResponseEntity<List<ListCounterAnalyticDto>> getListCounter(@PathVariable MediaType mediaType) {
         return ResponseEntity.ok(analyticsService.getListCounter(mediaType));
 
     }
