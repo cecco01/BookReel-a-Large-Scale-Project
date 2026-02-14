@@ -8,16 +8,14 @@ import org.springframework.data.neo4j.repository.query.Query;
 
 import java.util.List;
 
-//da modificare visto che non abbiamo progress!!
-/*
+//mettere progress!!
 public interface FilmsNeo4jRepository extends Neo4jRepository<FilmsNeo4j, String> {
     @Query("""
             MATCH (user:User)-[relationship:LIST_ELEMENT]->(Films:Films)
             WITH Films, relationship,
                  CASE
-                     WHEN relationship.progress = 0 THEN 'PLANNED'
-                     WHEN relationship.progress = Films.episodes AND Films.status = 'COMPLETE' THEN 'COMPLETED'
-                     ELSE 'IN_PROGRESS'
+                     WHEN relationship.progress = 1 THEN 'COMPLETED'
+                     ELSE 'PLANNED'
                  END AS listType
             WITH  Films, listType, count(DISTINCT relationship) AS listCount
             ORDER BY listType, listCount DESC
@@ -30,9 +28,8 @@ public interface FilmsNeo4jRepository extends Neo4jRepository<FilmsNeo4j, String
             MATCH (user:User)-[relationship:LIST_ELEMENT]->(Films:Films {id: $FilmsId})
             WITH Films, relationship,
                  CASE
-                     WHEN relationship.progress = 0 THEN 'PLANNED'
-                     WHEN relationship.progress = Films.episodes AND Films.status = 'COMPLETE' THEN 'COMPLETED'
-                     ELSE 'IN_PROGRESS'
+                     WHEN relationship.progress = 1 THEN 'COMPLETED'
+                     ELSE 'PLANNED'
                  END AS listType
             WITH  Films, listType, count(DISTINCT relationship) AS listCount
             WITH Films, collect({listType: listType, listCount: listCount}) AS appearances
@@ -40,4 +37,3 @@ public interface FilmsNeo4jRepository extends Neo4jRepository<FilmsNeo4j, String
             """)
     List<MediaInListsAnalyticDto> findFilmsAppearancesInLists(String FilmsId);
 }
-*/

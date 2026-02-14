@@ -25,12 +25,12 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
                      WHERE follower.id = $currentUserId
                  })
                )
-             RETURN f.id AS id, f.name AS name, f.status AS status, f.duration as duration
+             RETURN f.id AS id, f.name AS name, f.duration as duration
             """) //per il momento sui film ho provato a fare questa poi vediamo se abbiamo altri attributi da proiettare
     List<ListElementDto> findFilmsListsById(String id, String currentUserId);
 
     @Query("""
-            MATCH (u:User)-[l:LIST_ELEMENT]->(l:Libri)
+            MATCH (u:User)-[l:LIST_ELEMENT]->(b:Books)
             WHERE u.id = $id
               AND (
                 $id = $currentUserId OR
@@ -40,15 +40,15 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
                     WHERE follower.id = $currentUserId
                 })
               )
-            RETURN l.id AS id, l.name AS name, l.numPages AS total
+            RETURN b.id AS id, b.name AS name, b.numPages AS total
             """)//idem per i libri, vedi qual è il nome esatto per l'attributo numpages
     List<ListElementDto> findBooksListsById(String id, String currentUserId);
 
 //da modificare visto che non abbiamo progress!!
 @Query("MATCH (u:User {id: $userId})" +
-            " MATCH (m:Films {id: $mediaId})" +
+            " MATCH (f:Films {id: $mediaId})" +
             " MERGE (u)-[:LIST_ELEMENT {progress: 0}]->(a)" +
-            " RETURN count(a) > 0")
+            " RETURN count(f) > 0")
     boolean addFilmsToList(String userId, String mediaId);
 
 
@@ -56,25 +56,25 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
     @Query("MATCH (u:User {id: $userId})" +
             " MATCH (b:Books {id: $mediaId})" +
             " MERGE (u)-[:LIST_ELEMENT {progress: 0}]->(m)" +
-            "RETURN count(m) > 0")
+            "RETURN count(b) > 0")
     boolean addBooksToList(String userId, String mediaId);
 
-//da modificare visto che non abbiamo progress!!
+//DA FARE COME SWITCH ON OFF
     @Query("""
-            MATCH (u:User {id: $userId})-[rel:LIST_ELEMENT]->(m:Films {id: $FilmsId})
-            WHERE $episodesWatched <= a.episodes
+            MATCH (u:User {id: $userId})-[rel:LIST_ELEMENT]->(f:Films {id: $FilmsId})
+            WHERE $episodesWatched <= f.episodes
             SET rel.progress = $episodesWatched
-            RETURN COUNT(a) > 0
+            RETURN COUNT(f) > 0
             """)
     boolean modifyFilmsInList(String userId, String FilmsId, int episodesWatched);
 
 
-// ok abbiamo il numero di capiotoli ma non so se lasciarla così?
+//DA FARE CON SWITCH ON OFF
     @Query("""
             MATCH (u:User {id: $userId})-[rel:LIST_ELEMENT]->(b:Books {id: $BooksId})
-            WHERE $numPag <= m.numPages
+            WHERE $numPag <= b.numPages
             SET rel.progress = $numPag
-            RETURN count(m) > 0
+            RETURN count(b) > 0
             """)
     boolean modifyBooksInList(String userId, String BooksId, int numPag);
 

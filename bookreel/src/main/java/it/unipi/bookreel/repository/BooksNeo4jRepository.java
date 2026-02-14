@@ -8,16 +8,14 @@ import org.springframework.data.neo4j.repository.query.Query;
 
 import java.util.List;
 
-//da modificare visto che non abbiamo progress!!
-/*
+//mettere progress
 public interface BooksNeo4jRepository extends Neo4jRepository<BooksNeo4j, String> {
     @Query("""
             MATCH (user:User)-[relationship:LIST_ELEMENT]->(Books:Books)
             WITH Books, relationship,
                  CASE
-                     WHEN relationship.progress = 0 THEN 'PLANNED'
-                     WHEN relationship.progress = Books.numChapters AND Books.status = 'COMPLETE' THEN 'COMPLETED'
-                     ELSE 'IN_PROGRESS'
+                     WHEN relationship.progress = 1 THEN 'COMPLETED'
+                     ELSE 'PLANNED'
                  END AS listType
             WITH  Books, listType, count(DISTINCT relationship) AS listCount
             ORDER BY listType, listCount DESC
@@ -30,9 +28,8 @@ public interface BooksNeo4jRepository extends Neo4jRepository<BooksNeo4j, String
             MATCH (user:User)-[relationship:LIST_ELEMENT]->(Books:Books {id: $BooksId})
             WITH Books, relationship,
                  CASE
-                     WHEN relationship.progress = 0 THEN 'PLANNED'
-                     WHEN relationship.progress = Books.numChapters AND Books.status = 'COMPLETE' THEN 'COMPLETED'
-                     ELSE 'IN_PROGRESS'
+                     WHEN relationship.progress = 1 THEN 'COMPLETED'
+                     ELSE 'PLANNED'
                  END AS listType
             WITH  Books, listType, count(DISTINCT relationship) AS listCount
             WITH Books, collect({listType: listType, listCount: listCount}) AS appearances
@@ -40,4 +37,3 @@ public interface BooksNeo4jRepository extends Neo4jRepository<BooksNeo4j, String
             """)
     List<MediaInListsAnalyticDto> findBooksAppearancesInLists(String BooksId);
 }
-*/
