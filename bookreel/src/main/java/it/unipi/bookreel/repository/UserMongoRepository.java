@@ -34,17 +34,17 @@ public interface UserMongoRepository extends MongoRepository<UserMongo, String> 
     boolean existsByUsername(String username);
 
 
-    // CONTROLLARE
+    // Aggiunge un follower a un utente specifico
     @Update("{ $addToSet: { followers: ?1 } }")
     void findAndPushFollowerById(String id, String followerId);
 
 
-    // CONTROLLARE
+    // Rimuove un follower da un utente specifico
     @Update("{ $pull: { followers: ?1 } }")
     void findAndPullFollowerById(String id, String followerId);
 
 
-    // CONTROLLARE
+    // Rimuove un utente da tutti i followers di altri utenti
     @Query("{ 'followers': ?0 }")
     @Update("{ $pull: { followers: ?0 } }")
     void deleteUserFromFollowers(String id);
