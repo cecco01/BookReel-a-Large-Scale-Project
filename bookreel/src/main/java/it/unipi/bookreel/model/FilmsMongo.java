@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class FilmsMongo extends MediaMongo{
-    
 
     private double duration;
 

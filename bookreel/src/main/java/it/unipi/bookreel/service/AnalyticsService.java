@@ -65,7 +65,7 @@ public class AnalyticsService {
         }
     }
 
-// per ogni media, quali stanno peggiorando in temrini di punteggio
+// per ogni media, quali stanno peggiorando in termini di punteggio
     public List<TrendingMediaDto> getDecliningMedia(MediaType mediaType) {
         if (mediaType == MediaType.Books) {
             return BooksMongoRepository.topDecliningBooks();
@@ -74,7 +74,7 @@ public class AnalyticsService {
         }
     }
 
-// per ogni media, quali stanno migliorando in temrini di punteggio
+// per ogni media, quali stanno migliorando in termini di punteggio
     public List<TrendingMediaDto> getImprovingMedia(MediaType mediaType) {
         if (mediaType == MediaType.Books) {
             return BooksMongoRepository.topImprovingBooks();
