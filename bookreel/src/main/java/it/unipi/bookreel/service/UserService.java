@@ -1,5 +1,6 @@
 package it.unipi.bookreel.service;
 
+import it.unipi.bookreel.DTO.media.LikeElementDto;
 import it.unipi.bookreel.DTO.media.MediaListsDto;
 import it.unipi.bookreel.DTO.user.*;
 import it.unipi.bookreel.DTO.media.ListElementDto;
@@ -126,11 +127,17 @@ public class UserService {
         userNeo4jRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
         List<ListElementDto> mediaList;
+        List<LikeElementDto> mediaLike;
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (mediaType == MediaType.Films) {
             mediaList = userNeo4jRepository.findFilmsListsById(id, principal.getUser().getId());
         } else {
             mediaList = userNeo4jRepository.findBooksListsById(id, principal.getUser().getId());
+        }
+        if (mediaType == MediaType.Films) {
+            mediaLike = userNeo4jRepository.findLikedFilmsById(id, principal.getUser().getId());
+        } else {
+            mediaLike = userNeo4jRepository.findLikedBooksById(id, principal.getUser().getId());
         }
 
         MediaListsDto mediaLists = new MediaListsDto(
@@ -143,12 +150,15 @@ public class UserService {
             System.out.println(element);
             if (element.getProgress() == 0) {
                 mediaLists.plannedList().add(element);
-            } else if (element.getProgress() < element.getTotal()) {
-                mediaLists.likeList().add(element);// qua serve gestire l'if in modo coerente, senza usare progress!!
             } else {
                 mediaLists.completedList().add(element);
             }
         }
+        for (LikeElementDto element : mediaLike) {
+            System.out.println(element);
+                mediaLists.likeList().add(element);
+        }
+        
         return mediaLists;
     }
 
@@ -175,12 +185,40 @@ public class UserService {
         }
         return "Media added to user list";
     }
+    
+    @Retryable(
+            retryFor = {DataAccessException.class, TransactionSystemException.class},
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 2000)
+    )
+    public String addLikeToUserList(String userId, String mediaId, MediaType mediaType) {
+        userNeo4jRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
+        boolean success;
+        if (mediaType == MediaType.Films) {
+            success = userNeo4jRepository.addFilmLike(userId, mediaId);
+        } else {
+            success = userNeo4jRepository.addBookLike(userId, mediaId);
+        }
+
+        if (!success) {
+            throw new NoSuchElementException("Media not found");
+        }
+        return "Media added to like list";
+    }
 
 
-//!!! Questa si può togliere (prima controlli altri file che al usano) la uso per aggiornare il progresso di lettura/visione di un media, ma noi non abbiamo progresso
+    @Retryable(
+            retryFor = {DataAccessException.class, TransactionSystemException.class},
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 2000)
+    )
     public String modifyMediaInUserList(String userId, String mediaId, MediaType mediaType, int progress) {
         userNeo4jRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
+        if (progress != 0 && progress != 1) {
+            throw new IllegalArgumentException("Progress must be 0 (Planned) or 1 (Completed)");
+        }
         boolean success;
         if (mediaType == MediaType.Films) {
             success = userNeo4jRepository.modifyFilmsInList(userId, mediaId, progress);
@@ -207,6 +245,28 @@ public class UserService {
             success = userNeo4jRepository.removeFilmsFromList(userId, mediaId);
         } else {
             success = userNeo4jRepository.removeBooksFromList(userId, mediaId);
+        }
+
+        if (!success) {
+            throw new NoSuchElementException("Media not found");
+        }
+        return "Media deleted in user list";
+    }
+    
+    
+    @Retryable(
+            retryFor = {DataAccessException.class, TransactionSystemException.class},
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 2000)
+    )
+    public String removeLikeFromUserList(String userId, String mediaId, MediaType mediaType) {
+        userNeo4jRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
+        boolean success;
+        if (mediaType == MediaType.Films) {
+            success = userNeo4jRepository.removeFilmLike(userId, mediaId);
+        } else {
+            success = userNeo4jRepository.removeBookLike(userId, mediaId);
         }
 
         if (!success) {

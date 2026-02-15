@@ -3,8 +3,7 @@ package it.unipi.bookreel.DTO.media;
 import lombok.Data;
 
 @Data
-public class ListElementDto {
+public class LikeElementDto {
     private String id;
     private String name;
-    private int progress;
 }

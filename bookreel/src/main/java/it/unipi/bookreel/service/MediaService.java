@@ -153,10 +153,10 @@ public class MediaService {
                 targetMongo.setAuthors(BooksUpdateDto.getAuthors());
             }
             if (BooksUpdateDto.getNumPages() != null) {
-                targetMongo.setAuthors(BooksUpdateDto.getNumPages());
+                targetMongo.setNumPages(BooksUpdateDto.getNumPages());
             }
             if (BooksUpdateDto.getPublishers() != null) {
-                targetMongo.setAuthors(BooksUpdateDto.getPublishers());
+                targetMongo.setPublishers(BooksUpdateDto.getPublishers());
             }
             if (BooksUpdateDto.getSynopsis() != null) {
                 targetMongo.setSynopsis(BooksUpdateDto.getSynopsis());
