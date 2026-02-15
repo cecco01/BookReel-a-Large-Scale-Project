@@ -8,7 +8,7 @@ import org.springframework.data.neo4j.repository.query.Query;
 
 import java.util.List;
 
-//mettere progress
+//for each media list, find the 10 most present books
 public interface BooksNeo4jRepository extends Neo4jRepository<BooksNeo4j, String> {
     @Query("""
             MATCH (user:User)-[relationship:LIST_ELEMENT]->(Books:Books)
