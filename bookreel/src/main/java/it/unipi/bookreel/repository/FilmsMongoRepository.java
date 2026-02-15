@@ -25,12 +25,10 @@ public interface FilmsMongoRepository extends MongoRepository<FilmsMongo, String
     })
     Slice<MediaAverageDto> findByNameContaining(String name, Pageable pageable);
 
-    /*
-        // SERVE????? Aggiorna lo username nelle recensioni esistenti
-        @Query("{ 'reviews.username': ?0 }")
-        @Update("{ '$set': { 'reviews.$.username': ?1 } }")
-        void updateReviewsByUsername(String oldUsername, String newUsername);
-     */
+    
+    @Query("{ 'reviews.username': ?0 }")
+    @Update("{ '$set': { 'reviews.$.username': ?1 } }")
+    void updateReviewsByUsername(String oldUsername, String newUsername);
 
 
     // Elimina tutte le recensioni di uno specifico username

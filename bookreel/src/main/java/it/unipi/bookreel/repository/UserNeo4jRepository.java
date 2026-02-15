@@ -202,7 +202,7 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
 
 //costruisce un grafo GDS con nodi User e relazioni LIST_ELEMENT, poi calcola la nodeSimilarity per l’utente userId. Restituisce i 10 utenti piu simili (id, username, similarity), ordinati per similarita decrescente.
     @Query("""
-            MATCH (u:User {id: $userId})-[:LIST_ELEMENT]->(target)<-[:LIST_ELEMENT]-(other:User)
+            MATCH (u:User {id: $userId})-[:LIKES]->(target)<-[:LIKES]-(other:User)
             WITH collect(u) + collect(other) AS sourceNodes, collect(target) AS targetNodes
             CALL gds.graph.project(
               'myGraph',
@@ -213,7 +213,7 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
               },
               {
                 LIST_ELEMENT: {
-                  type: 'LIST_ELEMENT'
+                  type: 'LIKES'
                 }
               }
             )
@@ -233,7 +233,7 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
 //prende i media presenti nelle liste degli utenti seguiti dall’utente userId, filtra per tipo (Films o Books) e per privacy (esclude NOBODY). Conta quante volte ogni media appare e restituisce i 10 più popolari (restituisce [id], nome e count)
     @Query("""
             MATCH (user:User {id: $userId})-[:FOLLOW]->(f:User)-[:LIST_ELEMENT]->(media)
-            WHERE ((medim:Films AND $mediaType = 'Films') OR (medim:Books AND $mediaType = 'Books'))
+            WHERE ((media:Films AND $mediaType = 'Films') OR (media:Books AND $mediaType = 'Books'))
                   AND f.privacyStatus <> 'NOBODY'
             RETURN media.id AS id, media.name AS name, count(media.id) AS count
             ORDER BY count DESC

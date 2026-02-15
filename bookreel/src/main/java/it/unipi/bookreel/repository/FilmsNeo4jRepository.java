@@ -8,7 +8,6 @@ import org.springframework.data.neo4j.repository.query.Query;
 
 import java.util.List;
 
-//mettere progress!!
 public interface FilmsNeo4jRepository extends Neo4jRepository<FilmsNeo4j, String> {
     @Query("""
             MATCH (user:User)-[relationship:LIST_ELEMENT]->(Films:Films)

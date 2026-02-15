@@ -25,12 +25,10 @@ public interface BooksMongoRepository extends MongoRepository<BooksMongo, String
     })
     Slice<MediaAverageDto> findByNameContaining(String name, Pageable pageable);
 
-    /*
-        // SERVE????? Aggiorna il nome utente di tutte le recensioni di un dato username con il nuovo username
-        @Query("{ 'reviews.username': ?0 }")
-        @Update("{ '$set': { 'reviews.$.username': ?1 } }")
-        void updateReviewsByUsername(String oldUsername, String newUsername);
-     */
+    @Query("{ 'reviews.username': ?0 }")
+    @Update("{ '$set': { 'reviews.$.username': ?1 } }")
+    void updateReviewsByUsername(String oldUsername, String newUsername);
+     
 
     // Rimuove tutte le recensioni di un dato username da tutti i media
     @Query("{ 'reviews.username': ?0 }")

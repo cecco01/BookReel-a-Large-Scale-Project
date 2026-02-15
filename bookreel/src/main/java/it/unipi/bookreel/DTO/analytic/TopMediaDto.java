@@ -6,5 +6,5 @@ import lombok.Data;
 public class TopMediaDto {
     private String id;
     private String name;
-    private int count;
+    private int listCount;
 }
