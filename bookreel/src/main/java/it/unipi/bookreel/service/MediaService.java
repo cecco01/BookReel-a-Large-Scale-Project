@@ -37,7 +37,7 @@ public class MediaService {
 
     public Slice<MediaAverageDto> browseMedia(MediaType mediaType, String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        if (mediaType == MediaType.Books) {
+        if (mediaType == MediaType.BOOKS) {
             return BooksMongoRepository.findByNameContaining(name, pageable);
         } else {
             return FilmsMongoRepository.findByNameContaining(name, pageable);
@@ -45,12 +45,12 @@ public class MediaService {
     }
 
     public MediaDetailsDto getMediaById(MediaType mediaType, String mediaId) {
-        MediaMongo media = mediaType == MediaType.Books ? BooksMongoRepository.findById(mediaId)
+        MediaMongo media = mediaType == MediaType.BOOKS ? BooksMongoRepository.findById(mediaId)
                 .orElseThrow(() -> new NoSuchElementException("Media not found with id: " + mediaId)) :
                 FilmsMongoRepository.findById(mediaId)
                         .orElseThrow(() -> new NoSuchElementException("Media not found with id: " + mediaId));
 
-        if (mediaType == MediaType.Books) {
+        if (mediaType == MediaType.BOOKS) {
             BooksMongo Books = (BooksMongo) media;
             return BooksDetailsDto.builder()
                     .name(Books.getName())
@@ -208,7 +208,7 @@ public class MediaService {
             backoff = @Backoff(delay = 2000)
     )
     public String deleteMedia(String mediaId, MediaType mediaType) {
-        if (mediaType == MediaType.Books) {
+        if (mediaType == MediaType.BOOKS) {
             BooksMongo targetMongo = BooksMongoRepository.findById(mediaId)
                     .orElseThrow(() -> new NoSuchElementException("Media not found with id: " + mediaId));
             BooksNeo4j targetNeo4j = BooksNeo4jRepository.findById(mediaId)
@@ -231,7 +231,7 @@ public class MediaService {
     public String addReview(MediaType mediaType, String mediaId, UserMongo user, AddReviewDto review) {
         boolean hasReviewed;
         MediaMongo targetMongo;
-        if (mediaType == MediaType.Books) {
+        if (mediaType == MediaType.BOOKS) {
             targetMongo = BooksMongoRepository.findById(mediaId)
                     .orElseThrow(() -> new NoSuchElementException("Media not found with id: " + mediaId));
             hasReviewed = targetMongo.getReviews().stream()
@@ -252,7 +252,7 @@ public class MediaService {
         newReview.setUsername(user.getUsername());
         newReview.setScore(review.getScore());
         newReview.setComment(review.getComment());
-        newReview.setTimestamp(new Date());
+        newReview.setTimestamp(new Date().toInstant());
 
         List<ReviewDto> reviews = targetMongo.getReviews();
         reviews.add(newReview);
@@ -260,7 +260,7 @@ public class MediaService {
         targetMongo.setSumScores(targetMongo.getSumScores() + review.getScore());
         targetMongo.setNumScores(targetMongo.getNumScores() + 1);
 
-        if (mediaType == MediaType.Books) {
+        if (mediaType == MediaType.BOOKS) {
             BooksMongo BooksMongo = (BooksMongo) targetMongo;
             BooksMongoRepository.save(BooksMongo);
         } else {
@@ -272,7 +272,7 @@ public class MediaService {
     }
 
     public String deleteReview(String mediaId, String reviewId, MediaType mediaType) {
-        if (mediaType == MediaType.Books) {
+        if (mediaType == MediaType.BOOKS) {
             BooksMongo targetMongo = BooksMongoRepository.findById(mediaId)
                     .orElseThrow(() -> new NoSuchElementException("Media not found with id: " + mediaId));
             List<ReviewDto> reviews = targetMongo.getReviews();

@@ -58,7 +58,7 @@ public class AnalyticsService {
 
 // per ogni media, qual è la variazione di valutazioni (in termini di punteggio medio) rispetto al mese precedente, e quali sono i media più controversi (con la maggiore varianza nelle valutazioni)
     public List<ControversialMediaDto> getControversialMedia(MediaType mediaType) {
-        if (mediaType == MediaType.Books) {
+        if (mediaType == MediaType.BOOKS) {
             return BooksMongoRepository.mostControversialBooks();
         } else {
             return FilmsMongoRepository.mostControversialFilms();
@@ -67,7 +67,7 @@ public class AnalyticsService {
 
 // per ogni media, quali stanno peggiorando in termini di punteggio
     public List<TrendingMediaDto> getDecliningMedia(MediaType mediaType) {
-        if (mediaType == MediaType.Books) {
+        if (mediaType == MediaType.BOOKS) {
             return BooksMongoRepository.topDecliningBooks();
         } else {
             return FilmsMongoRepository.topDecliningFilms();
@@ -76,7 +76,7 @@ public class AnalyticsService {
 
 // per ogni media, quali stanno migliorando in termini di punteggio
     public List<TrendingMediaDto> getImprovingMedia(MediaType mediaType) {
-        if (mediaType == MediaType.Books) {
+        if (mediaType == MediaType.BOOKS) {
             return BooksMongoRepository.topImprovingBooks();
         } else {
             return FilmsMongoRepository.topImprovingFilms();
@@ -97,7 +97,7 @@ public class AnalyticsService {
 
 // per ogni media, quante liste degli utenti lo contengono
     public List<ListCounterAnalyticDto> getListCounter(MediaType mediaType) {
-        if (mediaType == MediaType.Books) {
+        if (mediaType == MediaType.BOOKS) {
             return BooksNeo4jRepository.findListCounters();
         } else {
             return FilmsNeo4jRepository.findListCounters();
@@ -106,7 +106,7 @@ public class AnalyticsService {
 
 // per un dato media, in quante e quali liste degli utenti è presente
     public List<MediaInListsAnalyticDto> getMediaInLists(MediaType mediaType, String mediaId) {
-        if (mediaType == MediaType.Books) {
+        if (mediaType == MediaType.BOOKS) {
             return BooksNeo4jRepository.findBooksAppearancesInLists(mediaId);
         } else {
             return FilmsNeo4jRepository.findFilmsAppearancesInLists(mediaId);

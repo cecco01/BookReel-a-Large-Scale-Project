@@ -129,12 +129,12 @@ public class UserService {
         List<ListElementDto> mediaList;
         List<LikeElementDto> mediaLike;
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (mediaType == MediaType.Films) {
+        if (mediaType == MediaType.FILMS) {
             mediaList = userNeo4jRepository.findFilmsListsById(id, principal.getUser().getId());
         } else {
             mediaList = userNeo4jRepository.findBooksListsById(id, principal.getUser().getId());
         }
-        if (mediaType == MediaType.Films) {
+        if (mediaType == MediaType.FILMS) {
             mediaLike = userNeo4jRepository.findLikedFilmsById(id, principal.getUser().getId());
         } else {
             mediaLike = userNeo4jRepository.findLikedBooksById(id, principal.getUser().getId());
@@ -174,7 +174,7 @@ public class UserService {
         userNeo4jRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
         boolean success;
-        if (mediaType == MediaType.Films) {
+        if (mediaType == MediaType.FILMS) {
             success = userNeo4jRepository.addFilmsToList(userId, mediaId);
         } else {
             success = userNeo4jRepository.addBooksToList(userId, mediaId);
@@ -195,7 +195,7 @@ public class UserService {
         userNeo4jRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
         boolean success;
-        if (mediaType == MediaType.Films) {
+        if (mediaType == MediaType.FILMS) {
             success = userNeo4jRepository.addFilmLike(userId, mediaId);
         } else {
             success = userNeo4jRepository.addBookLike(userId, mediaId);
@@ -220,7 +220,7 @@ public class UserService {
             throw new IllegalArgumentException("Progress must be 0 (Planned) or 1 (Completed)");
         }
         boolean success;
-        if (mediaType == MediaType.Films) {
+        if (mediaType == MediaType.FILMS) {
             success = userNeo4jRepository.modifyFilmsInList(userId, mediaId, progress);
         } else {
             success = userNeo4jRepository.modifyBooksInList(userId, mediaId, progress);
@@ -241,7 +241,7 @@ public class UserService {
         userNeo4jRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
         boolean success;
-        if (mediaType == MediaType.Films) {
+        if (mediaType == MediaType.FILMS) {
             success = userNeo4jRepository.removeFilmsFromList(userId, mediaId);
         } else {
             success = userNeo4jRepository.removeBooksFromList(userId, mediaId);
@@ -263,7 +263,7 @@ public class UserService {
         userNeo4jRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
         boolean success;
-        if (mediaType == MediaType.Films) {
+        if (mediaType == MediaType.FILMS) {
             success = userNeo4jRepository.removeFilmLike(userId, mediaId);
         } else {
             success = userNeo4jRepository.removeBookLike(userId, mediaId);

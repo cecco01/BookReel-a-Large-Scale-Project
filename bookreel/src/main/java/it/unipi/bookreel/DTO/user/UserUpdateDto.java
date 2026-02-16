@@ -6,7 +6,7 @@ import jakarta.validation.constraints.*;
 public record UserUpdateDto(
         @NotEmpty
         String username,
-        @Min(4)
+        @Size(min = 4, message = "La password deve avere almeno 4 caratteri")
         String password,
         @Email
         String email,

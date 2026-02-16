@@ -40,7 +40,7 @@ public class RecommendationService {
     }
 
     public List<MediaAverageDto> getTop3Media(MediaType mediaType, String genre) {
-        if (mediaType == MediaType.Films) {
+        if (mediaType == MediaType.FILMS) {
             return FilmsMongoRepository.top3FilmsByAverage(genre);
         } else {
             return BooksMongoRepository.top3BooksByAverage(genre);

@@ -1,5 +1,6 @@
 package it.unipi.bookreel.DTO.media;
 
+import java.time.Instant;
 import lombok.Data;
 import java.time.LocalDate;
 import java.util.Date;
@@ -10,5 +11,5 @@ public class ReviewDto {
     private String username;
     private int score;
     private String comment;
-    private Date timestamp;
+    private Instant timestamp;
 }

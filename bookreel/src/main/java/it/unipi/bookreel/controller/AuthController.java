@@ -1,5 +1,6 @@
 package it.unipi.bookreel.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.unipi.bookreel.DTO.user.AccessTokenDto;
 import it.unipi.bookreel.DTO.user.UserLoginDto;
@@ -27,13 +28,19 @@ public class AuthController {
     }
 
     /* ================================ AUTHENTICATION ================================ */
-
+    
+    @Operation(
+        description = "Create a new User"
+    )
     @PostMapping("/register")
     public ResponseEntity<UserMongo> registerUser(@Valid @RequestBody UserRegistrationDto user) {
         authService.registerUser(user);
         return ResponseEntity.ok().build();
     }
 
+    @Operation(
+        description = "Log into an existing account"
+    )
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserLoginDto user) {
         try {

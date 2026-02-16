@@ -11,8 +11,8 @@ import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "mediaType")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = FilmsUpdateDto.class, name = "Films"),
-        @JsonSubTypes.Type(value = BooksUpdateDto.class, name = "Books")
+        @JsonSubTypes.Type(value = FilmsUpdateDto.class, name = "FILMS"),
+        @JsonSubTypes.Type(value = BooksUpdateDto.class, name = "BOOKS")
 })
 @Data
 public abstract class MediaUpdateDto {

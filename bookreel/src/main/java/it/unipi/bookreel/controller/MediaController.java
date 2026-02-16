@@ -1,5 +1,6 @@
 package it.unipi.bookreel.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.unipi.bookreel.DTO.media.AddReviewDto;
 import it.unipi.bookreel.DTO.media.MediaAverageDto;
@@ -26,7 +27,10 @@ public class MediaController {
     public MediaController(MediaService mediaService) {
         this.mediaService = mediaService;
     }
-
+    
+    @Operation(
+        description = "Returns the media according to the query"
+    )
     @GetMapping("/{mediaType}")
     public ResponseEntity<?> browseMedia(
             @PathVariable MediaType mediaType,
@@ -40,17 +44,26 @@ public class MediaController {
             return ResponseEntity.ok(results);
     }
 
+    @Operation(
+        description = "Returns the the details of the specified media"
+    )
     @GetMapping("/{mediaType}/{mediaId}")
     public ResponseEntity<MediaDetailsDto> getMediaById(@PathVariable MediaType mediaType, @PathVariable String mediaId) {
         return ResponseEntity.ok(mediaService.getMediaById(mediaType, mediaId));
     }
 
+    @Operation(
+        description = "Create a review for a media"
+    )
     @PostMapping("/{mediaType}/{mediaId}/review")
     public ResponseEntity<String> addReview(@PathVariable MediaType mediaType, @PathVariable String mediaId, @RequestBody AddReviewDto review) {
         UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(mediaService.addReview(mediaType, mediaId, user.getUser(), review));
     }
 
+    @Operation(
+        description = "Delete your review for a media (reviewId is your user ID)"
+    )
     @DeleteMapping("/{mediaType}/{mediaId}/review/{reviewId}")
     public ResponseEntity<String> deleteReview(@PathVariable MediaType mediaType, @PathVariable String mediaId, @PathVariable String reviewId) {
         UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
