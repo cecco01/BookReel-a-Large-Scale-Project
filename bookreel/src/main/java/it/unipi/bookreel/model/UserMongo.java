@@ -4,6 +4,7 @@ import it.unipi.bookreel.enumerator.PrivacyStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
+import java.time.Instant;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -41,5 +42,5 @@ public class UserMongo {
     private List<String> followers;
 
     @Indexed(unique = true)
-    private Date createdAt;
+    private Instant createdAt;
 }

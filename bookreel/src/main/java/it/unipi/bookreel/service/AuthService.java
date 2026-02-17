@@ -64,7 +64,7 @@ public class AuthService {
         newUserMongo.setPassword(encoder.encode(user.password()));
         newUserMongo.setEmail(user.email());
         newUserMongo.setRole("USER");
-        newUserMongo.setCreatedAt(new Date());
+        newUserMongo.setCreatedAt(new Date().toInstant());
         newUserMongo.setPrivacyStatus(PrivacyStatus.ALL);
         userMongoRepository.save(newUserMongo);
 
