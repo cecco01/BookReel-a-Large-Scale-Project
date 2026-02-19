@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class TrendingMediaDto {
     @NotBlank
-    private int id;
+    private String id;
     @NotBlank
     private String name;
     @NotBlank
