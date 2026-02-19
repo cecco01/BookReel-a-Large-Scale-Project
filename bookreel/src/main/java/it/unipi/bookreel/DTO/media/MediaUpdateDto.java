@@ -9,7 +9,7 @@ import lombok.Data;
 
 import java.util.List;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "mediaType")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = FilmsUpdateDto.class, name = "FILMS"),
         @JsonSubTypes.Type(value = BooksUpdateDto.class, name = "BOOKS")

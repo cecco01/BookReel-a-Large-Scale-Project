@@ -6,6 +6,7 @@ import it.unipi.bookreel.DTO.media.LikeElementDto;
 import it.unipi.bookreel.DTO.media.ListElementDto;
 import it.unipi.bookreel.DTO.media.MediaIdNameDto;
 import it.unipi.bookreel.DTO.user.UserIdUsernameDto;
+import it.unipi.bookreel.DTO.user.UserIdUsernameDtoSimilarity;
 import it.unipi.bookreel.model.UserNeo4j;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
@@ -89,28 +90,28 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
             " MATCH (b:Books {id: $mediaId})" +
             " MERGE (u)-[r:LIST_ELEMENT]->(b)" +
             " ON CREATE SET r.progress = 0"+
-            "RETURN count(b) > 0")
+            " RETURN count(b) > 0")
     boolean addBooksToList(String userId, String mediaId);
     
     @Query("""
             MATCH (u:User {id: $userId})
             MATCH (f:Films {id: $mediaId})
             MERGE (u)-[r:LIKES]->(f)
-            RETURN r IS NOT NULL
+            RETURN count(f) > 0
             """)
     boolean addFilmLike(String userId, String mediaId);
     
     @Query("""
             MATCH (u:User {id: $userId})
             MATCH (b:Books {id: $mediaId})
-            MERGE (u)-[r:LIKE]->(b)
-            RETURN r IS NOT NULL
+            MERGE (u)-[r:LIKES]->(b)
+            RETURN count(b) > 0
             """)
     boolean addBookLike(String userId, String mediaId);
 
 
     @Query("""
-            MATCH (u:User {id: $userId})-[rel:LIST_ELEMENT]->(f:Films {id: $FilmsId})
+            MATCH (u:User {id: $userId})-[rel:LIST_ELEMENT]->(f:Films {id: $mediaId})
             SET rel.progress = $progress
             RETURN COUNT(f) > 0
             """)
@@ -118,7 +119,7 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
 
 
     @Query("""
-            MATCH (u:User {id: $userId})-[rel:LIST_ELEMENT]->(b:Books {id: $BooksId})
+            MATCH (u:User {id: $userId})-[rel:LIST_ELEMENT]->(b:Books {id: $mediaId})
             SET rel.progress = $progress
             RETURN count(b) > 0
             """)
@@ -190,7 +191,7 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
 
 
 //crea (o mantiene) la relazione FOLLOW tra due utenti (followerId -> followedId) usando MERGE. Restituisce true se trova il nodo seguito (count(f) > 0), quindi se l’operazione ha un target valido.
-    @Query("MATCH (u:User {id: $followerId}), (f:User {id: $followedId}) MERGE (u)-[:FOLLOW]->(f)" +
+    @Query("MATCH (u:User {id: $followerId}), (f:User {id: $followedId}) MERGE (u)-[r:FOLLOW]->(f)" +
             " RETURN r IS NOT NULL")
     boolean followUser(String followerId, String followedId);
 
@@ -202,10 +203,10 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
 
 
 // Trova i 10 utenti con gusti più simili basandosi sui media a cui hanno messo LIKES
-    @Query("""
+    /*@Query("""
         CALL gds.graph.project(
-          'similarityGraph',
-          ['User', 'Book', 'Film'],
+          'myGraph',
+          ['User', 'Books', 'Films'],
           {
             LIKES: {
               type: 'LIKES',
@@ -215,7 +216,7 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
         )
         YIELD graphName
         
-        CALL gds.nodeSimilarity.stream('similarityGraph')
+        CALL gds.nodeSimilarity.stream('myGraph')
         YIELD node1, node2, similarity
         WITH gds.util.asNode(node1) AS user1, gds.util.asNode(node2) AS user2, similarity
         WHERE user1.id = $userId AND user1.id <> user2.id
@@ -223,7 +224,7 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
         ORDER BY similarity DESC
         LIMIT 10
         """)
-    List<UserIdUsernameDto> findUsersWithSimilarTastes(String userId);
+    List<UserIdUsernameDtoSimilarity> findUsersWithSimilarTastes(String userId);*/
 /*//costruisce un grafo GDS con nodi User e relazioni LIST_ELEMENT, poi calcola la nodeSimilarity per l’utente userId. Restituisce i 10 utenti piu simili (id, username, similarity), ordinati per similarita decrescente.
     @Query("""
             MATCH (u:User {id: $userId})-[:LIKES]->(target)<-[:LIKES]-(other:User)
@@ -279,9 +280,9 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
 
 
 // Trova le SCC (Strongly Connected Components) del grafo dei follow e ritorna gli utenti di ciascuna componente maggiore di 1
-    @Query("""
+    /*@Query("""
         CALL gds.graph.project(
-          'sccGraph',
+          'graph',
           'User',
           {
             FOLLOW: {
@@ -292,7 +293,7 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
         )
         YIELD graphName
         
-        CALL gds.scc.stream('sccGraph')
+        CALL gds.scc.stream('graph')
         YIELD componentId, nodeId
         WITH componentId, collect(gds.util.asNode(nodeId)) AS users
         WHERE size(users) > 1
@@ -302,7 +303,7 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
                [user IN users | {id: user.id, username: user.username}] AS userDetails
         ORDER BY componentSize DESC
         """)
-    List<SCCAnalyticDto> findSCC();
+    List<SCCAnalyticDto> findSCC();*/
 /*//costruisce un grafo GDS con relazioni FOLLOW, calcola le componenti fortemente connesse (SCC) e restituisce quelle con piudi 1 utente. Restituisce per ogni componente: id, dimensione, lista di utenti (id e username) ordinati per dimensione decrescente
     @Query("""
             MATCH (source:User)-[:FOLLOW]->(target:User)

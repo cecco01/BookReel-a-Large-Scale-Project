@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import it.unipi.bookreel.DTO.media.MediaAverageDto;
 import it.unipi.bookreel.DTO.media.MediaIdNameDto;
 import it.unipi.bookreel.DTO.user.UserIdUsernameDto;
+import it.unipi.bookreel.DTO.user.UserIdUsernameDtoSimilarity;
 import it.unipi.bookreel.model.UserPrincipal;
 import it.unipi.bookreel.service.RecommendationService;
 import it.unipi.bookreel.enumerator.MediaType;
@@ -25,7 +26,7 @@ public class RecommendationController {
     }
 
     @GetMapping("/similar-users")
-    public ResponseEntity<List<UserIdUsernameDto>> getUsersWithSimilarTastes() {
+    public ResponseEntity<List<UserIdUsernameDtoSimilarity>> getUsersWithSimilarTastes() {
         UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(recommendationService.getUsersWithSimilarTastes(user.getUser().getId()));
     }
