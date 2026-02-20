@@ -33,6 +33,10 @@ public interface UserMongoRepository extends MongoRepository<UserMongo, String> 
     // Verifica se esiste un utente con l'username fornito
     boolean existsByUsername(String username);
 
+    boolean existsByUsernameAndIdNot(String username, String id);
+
+    boolean existsByEmailAndIdNot(String email, String id);
+
 
     // Aggiunge un follower a un utente specifico
     @Update("{ $addToSet: { followers: ?1 } }")
@@ -52,11 +56,12 @@ public interface UserMongoRepository extends MongoRepository<UserMongo, String> 
 
     // Restituisce per ogni anno il mese con il maggior numero di utenti creati a partire da una certa data
     @Aggregation(pipeline = {
-            "{ '$match': { 'createdAt': { '$gte': ?0 } } }",
-            "{ '$group': { '_id': { 'anno': { '$year': '$createdAt' }, 'mese': { '$month': '$createdAt' } }, 'totaleUtenti': { '$sum': 1 } } }",
+            "{ '$addFields': { 'createdAtDate': { '$toDate': '$createdAt' } } }",
+            "{ '$match': { 'createdAtDate': { '$gte': ?0 } } }",
+            "{ '$group': { '_id': { 'anno': { '$year': '$createdAtDate' }, 'mese': { '$month': '$createdAtDate' } }, 'totaleUtenti': { '$sum': 1 } } }",
             "{ '$sort': { '_id.anno': 1, 'totaleUtenti': -1 } }",
             "{ '$group': { '_id': '$_id.anno', 'meseTop': { '$first': { 'mese': '$_id.mese', 'conteggio': '$totaleUtenti' } } } }",
-            "{ '$project': { '_id': 0, 'anno': '$_id', 'mese': '$meseTop.mese', 'conteggio': '$meseTop.conteggio' } }"
+            "{ '$project': { '_id': 0, 'year': '$_id', 'month': '$meseTop.mese', 'count': '$meseTop.conteggio' } }"
     })
     List<MonthAnalytic> topMonthsByYearSince(Date fromDate);
 }

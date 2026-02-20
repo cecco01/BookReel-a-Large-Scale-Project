@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -35,5 +36,5 @@ public abstract class MediaMongo {
     @NotEmpty
     private String synopsis;
 
-    private List<ReviewDto> reviews;
+    private List<ReviewDto> reviews = new ArrayList<>();
 }

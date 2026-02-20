@@ -60,7 +60,17 @@ public class AnalyticsService {
         cal.set(Calendar.DAY_OF_YEAR, 1);
         Date firstDay = cal.getTime();
         List<MonthAnalytic> results = userMongoRepository.topMonthsByYearSince(firstDay);
-        monthAnalyticRepository.saveAll(results);
+        for (MonthAnalytic result : results) {
+            result.setId(String.valueOf(result.getYear())); // forza id univoco
+            MonthAnalytic existing = monthAnalyticRepository.findByYear(result.getYear());
+            if (existing != null) {
+                existing.setMonth(result.getMonth());
+                existing.setCount(result.getCount());
+                monthAnalyticRepository.save(existing);
+            } else {
+                monthAnalyticRepository.save(result);
+            }
+        }
         return monthAnalyticRepository.findAllByOrderByYear();
     }
 

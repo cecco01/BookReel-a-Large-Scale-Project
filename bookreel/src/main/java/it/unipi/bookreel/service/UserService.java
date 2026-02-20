@@ -74,7 +74,7 @@ public class UserService {
         UserNeo4j userNeo4j = userNeo4jRepository.findById(user.getId())
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
         if (updates.username() != null) {
-            if (userMongoRepository.existsByUsername(updates.username())) {
+            if (userMongoRepository.existsByUsernameAndIdNot(updates.username(), user.getId())) {
                 throw new IllegalArgumentException("Username already exists");
             }
             user.setUsername(updates.username());
@@ -84,7 +84,7 @@ public class UserService {
             user.setPassword(encoder.encode(updates.password()));
         }
         if (updates.email() != null) {
-            if (userMongoRepository.existsByEmail(updates.email())) {
+            if (userMongoRepository.existsByEmailAndIdNot(updates.email(), user.getId())) {
                 throw new IllegalArgumentException("Email already exists");
             }
             user.setEmail(updates.email());
@@ -97,7 +97,6 @@ public class UserService {
         userMongoRepository.save(user);
 
         if (updates.username() != null) {
-            //updates reviews username
             FilmsMongoRepository.updateReviewsByUsername(user.getUsername(), updates.username());
             BooksMongoRepository.updateReviewsByUsername(user.getUsername(), updates.username());
         }

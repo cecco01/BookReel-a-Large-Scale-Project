@@ -258,10 +258,11 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
 //prende i media presenti nelle liste degli utenti seguiti dall’utente userId, filtra per tipo (Films o Books) e per privacy (esclude NOBODY). Conta quante volte ogni media appare e restituisce i 10 più popolari (restituisce [id], nome e count)
     @Query("""
             MATCH (user:User {id: $userId})-[:FOLLOW]->(f:User)-[:LIST_ELEMENT]->(media)
-            WHERE ((media:Films AND $mediaType = 'Films') OR (media:Books AND $mediaType = 'Books'))
+            WHERE ((media:Films AND $mediaType = 'FILMS') OR (media:Books AND $mediaType = 'BOOKS'))
                   AND f.privacyStatus <> 'NOBODY'
-            RETURN media.id AS id, media.name AS name, count(media.id) AS count
-            ORDER BY count DESC
+            WITH media, count(media.id) AS cnt
+            RETURN media.id AS id, media.name AS name
+            ORDER BY cnt DESC
             LIMIT 10
             """)
     List<MediaIdNameDto> findPopularMediaAmongFollows(String mediaType, String userId);
@@ -333,13 +334,8 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
 
 
 // Elimina il grafo GDS se esiste (void)
-    @Query("CALL gds.graph.drop($graphName)")
-    void dropGraph(String graphName);
-/*
-//elimina il grafo GDS con nome "graphName", se esiste
     @Query("CALL gds.graph.drop($graphName) YIELD graphName RETURN graphName")
-    void dropGraph(String graphName);
-*/
+    String dropGraph(String graphName);
 
 
 }

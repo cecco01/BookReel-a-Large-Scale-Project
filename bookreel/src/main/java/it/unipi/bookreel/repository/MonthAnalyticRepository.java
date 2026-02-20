@@ -10,4 +10,7 @@ import java.util.List;
 public interface MonthAnalyticRepository extends MongoRepository<MonthAnalytic, String> {
     MonthAnalytic findTopByOrderByYearDesc();
     List<MonthAnalytic> findAllByOrderByYear();
+
+    MonthAnalytic findByYear(int year);
 }
+

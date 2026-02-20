@@ -1,6 +1,5 @@
 package it.unipi.bookreel.model;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -15,7 +14,6 @@ public class MonthAnalytic {
     @Indexed(unique = true)
     private int year;
 
-    @NotBlank
     private int month;
 
     private int count = 0;

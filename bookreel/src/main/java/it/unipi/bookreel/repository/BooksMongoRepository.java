@@ -66,7 +66,7 @@ public interface BooksMongoRepository extends MongoRepository<BooksMongo, String
             "{ '$addFields': { 'declineScore': { '$subtract': ['$totalAvgScore', '$recentAvgScore'] } } }",
             "{ '$sort': { 'declineScore': -1 } }",
             "{ '$limit': 10 }",
-            "{ '$project': { '_id': 0, 'id': '$_id', 'name': '$name', 'declineScore': 1 } }"
+            "{ '$project': { '_id': 0, 'id': '$_id', 'name': '$name', 'scoreDifference': '$declineScore' } }"
     })
     List<TrendingMediaDto> topDecliningBooks();
 
@@ -86,7 +86,7 @@ public interface BooksMongoRepository extends MongoRepository<BooksMongo, String
             "{ '$addFields': { 'improvementScore': { '$subtract': ['$recentAvgScore', '$totalAvgScore'] } } }",
             "{ '$sort': { 'improvementScore': -1 } }",
             "{ '$limit': 10 }",
-            "{ '$project': { '_id': 0, 'id': '$_id', 'name': '$name', 'improvementScore': 1 } }"
+            "{ '$project': { '_id': 0, 'id': '$_id', 'name': '$name', 'scoreDifference': '$improvementScore' } }"
     })
     List<TrendingMediaDto> topImprovingBooks();
 
