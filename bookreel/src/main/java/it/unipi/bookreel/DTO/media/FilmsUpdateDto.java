@@ -17,5 +17,3 @@ public class FilmsUpdateDto extends MediaUpdateDto {
     @NotEmpty
     private List<String> studios;
 }
-
-//vedi se occorre aggiungere altri attributi specifici dei film

@@ -202,59 +202,6 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
     boolean unfollowUser(String followerId, String followedId);
 
 
-// Trova i 10 utenti con gusti più simili basandosi sui media a cui hanno messo LIKES
-    /*@Query("""
-        CALL gds.graph.project(
-          'myGraph',
-          ['User', 'Books', 'Films'],
-          {
-            LIKES: {
-              type: 'LIKES',
-              orientation: 'UNDIRECTED'
-            }
-          }
-        )
-        YIELD graphName
-        
-        CALL gds.nodeSimilarity.stream('myGraph')
-        YIELD node1, node2, similarity
-        WITH gds.util.asNode(node1) AS user1, gds.util.asNode(node2) AS user2, similarity
-        WHERE user1.id = $userId AND user1.id <> user2.id
-        RETURN user2.id AS id, user2.username AS username, similarity
-        ORDER BY similarity DESC
-        LIMIT 10
-        """)
-    List<UserIdUsernameDtoSimilarity> findUsersWithSimilarTastes(String userId);*/
-/*//costruisce un grafo GDS con nodi User e relazioni LIST_ELEMENT, poi calcola la nodeSimilarity per l’utente userId. Restituisce i 10 utenti piu simili (id, username, similarity), ordinati per similarita decrescente.
-    @Query("""
-            MATCH (u:User {id: $userId})-[:LIKES]->(target)<-[:LIKES]-(other:User)
-            WITH collect(u) + collect(other) AS sourceNodes, collect(target) AS targetNodes
-            CALL gds.graph.project(
-              'myGraph',
-              {
-                User: {
-                  label: 'User'
-                }
-              },
-              {
-                LIST_ELEMENT: {
-                  type: 'LIKES'
-                }
-              }
-            )
-            YIELD graphName
-            
-            CALL gds.nodeSimilarity.stream('myGraph')
-            YIELD node1, node2, similarity
-            WITH gds.util.asNode(node2) AS user1, similarity
-            WHERE gds.util.asNode(node1).id = $userId
-            RETURN user1.id AS id, user1.username AS username, similarity
-            ORDER BY similarity DESC
-            LIMIT 10
-            """)
-    List<UserIdUsernameDto> findUsersWithSimilarTastes(String userId);
-    */
-
 //prende i media presenti nelle liste degli utenti seguiti dall’utente userId, filtra per tipo (Films o Books) e per privacy (esclude NOBODY). Conta quante volte ogni media appare e restituisce i 10 più popolari (restituisce [id], nome e count)
     @Query("""
             MATCH (user:User {id: $userId})-[:FOLLOW]->(f:User)-[:LIST_ELEMENT]->(media)
@@ -277,60 +224,6 @@ public interface UserNeo4jRepository extends Neo4jRepository<UserNeo4j, String> 
             RETURN u.id AS userId, u.username AS username, followersCount
             """)
     List<InfluencersDto> findMostFollowedUsers();
-
-
-
-// Trova le SCC (Strongly Connected Components) del grafo dei follow e ritorna gli utenti di ciascuna componente maggiore di 1
-    /*@Query("""
-        CALL gds.graph.project(
-          'graph',
-          'User',
-          {
-            FOLLOW: {
-              type: 'FOLLOW',
-              orientation: 'NATURAL'
-            }
-          }
-        )
-        YIELD graphName
-        
-        CALL gds.scc.stream('graph')
-        YIELD componentId, nodeId
-        WITH componentId, collect(gds.util.asNode(nodeId)) AS users
-        WHERE size(users) > 1
-        WITH componentId, users, size(users) AS componentSize
-        RETURN componentId,
-               componentSize,
-               [user IN users | {id: user.id, username: user.username}] AS userDetails
-        ORDER BY componentSize DESC
-        """)
-    List<SCCAnalyticDto> findSCC();*/
-/*//costruisce un grafo GDS con relazioni FOLLOW, calcola le componenti fortemente connesse (SCC) e restituisce quelle con piudi 1 utente. Restituisce per ogni componente: id, dimensione, lista di utenti (id e username) ordinati per dimensione decrescente
-    @Query("""
-            MATCH (source:User)-[:FOLLOW]->(target:User)
-            WITH collect(source) AS sourceNodes, collect(target) AS targetNodes
-            CALL gds.graph.project(
-              'graph',
-              ['User'],
-              {
-                FOLLOW: {
-                  type: 'FOLLOW'
-                }
-              }
-            )
-            YIELD graphName
-            
-            CALL gds.scc.stream('graph', {})
-            YIELD componentId, nodeId
-            WITH componentId, collect(gds.util.asNode(nodeId)) AS users
-            WHERE size(users) > 1
-            RETURN componentId,
-                   size(users) AS componentSize,
-                   [user IN users | {id: user.id, username: user.username}] AS userDetails
-            ORDER BY componentSize DESC
-            """)
-    List<SCCAnalyticDto> findSCC();
-*/
 
 
 // Elimina il grafo GDS se esiste (void)

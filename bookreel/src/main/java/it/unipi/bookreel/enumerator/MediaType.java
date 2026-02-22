@@ -1,7 +1,7 @@
 package it.unipi.bookreel.enumerator;
 
 public enum MediaType {
-    FILMS, //vedi se è meglio mettere Film and Books come valori!!
+    FILMS,
     BOOKS;
 
     public static MediaType fromString(String type) {

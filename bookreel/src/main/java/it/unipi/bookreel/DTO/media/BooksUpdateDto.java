@@ -18,6 +18,3 @@ public class BooksUpdateDto extends MediaUpdateDto {
     @NotEmpty
     private List<String> publishers;
 }
-
-
-//nel caso mettere anche il genere e altri sttributi specifici dei libri
