@@ -91,21 +91,32 @@ public interface FilmsMongoRepository extends MongoRepository<FilmsMongo, String
     })
     List<TrendingMediaDto> topImprovingFilms();
 
-    // Restituisce i 3 film con punteggio medio più alto, filtrando opzionalmente per genere
-    @Aggregation(pipeline = {
-            "{ '$addFields': { 'calculatedAvg': { '$cond': { 'if': { '$gt': ['$numScores', 0] }, 'then': { '$divide': ['$sumScores', '$numScores'] }, 'else': 0 } } } }",
-            "{ '$sort': { 'calculatedAvg': -1 } }",
-            "{ '$limit': 3 }",
-            "{ '$project': { '_id': 1, 'name': 1, 'averageScore': '$calculatedAvg' } }"
-    })
-    List<MediaAverageDto> top3FilmsByAverage();
+    /*
+// Restituisce i 3 film con punteggio medio più alto, filtrando opzionalmente per genere
+@Aggregation(pipeline = {
+        "{ '$addFields': { 'calculatedAvg': { '$cond': { 'if': { '$gt': ['$numScores', 0] }, 'then': { '$divide': ['$sumScores', '$numScores'] }, 'else': 0 } } } }",
+        "{ '$sort': { 'calculatedAvg': -1 } }",
+        "{ '$limit': 3 }",
+        "{ '$project': { '_id': 1, 'name': 1, 'averageScore': '$calculatedAvg' } }"
+})
+List<MediaAverageDto> top3FilmsByAverage();
+
+@Aggregation(pipeline = {
+        "{ '$addFields': { 'calculatedAvg': { '$cond': { 'if': { '$gt': ['$numScores', 0] }, 'then': { '$divide': ['$sumScores', '$numScores'] }, 'else': 0 } } } }",
+        "{ '$match': { 'genres': ?0 } }",
+        "{ '$sort': { 'calculatedAvg': -1 } }",
+        "{ '$limit': 3 }",
+        "{ '$project': { '_id': 1, 'name': 1, 'averageScore': '$calculatedAvg' } }"
+})
+List<MediaAverageDto> top3FilmsByAverageAndGenre(String genre);*/
 
     @Aggregation(pipeline = {
-            "{ '$addFields': { 'calculatedAvg': { '$cond': { 'if': { '$gt': ['$numScores', 0] }, 'then': { '$divide': ['$sumScores', '$numScores'] }, 'else': 0 } } } }",
-            "{ '$match': { 'genres': ?0 } }",
+            "{ '$addFields': { 'calculatedAvg': { '$cond': { 'if': { '$gt': ['$numScores', 0] }, " +
+                    "'then': { '$divide': ['$sumScores', '$numScores'] }, 'else': 0 } } } }",
+            "{ '$match': { '$expr': { '$or': [ { '$eq': [?0, null] }, { '$in': [?0, '$genres'] } ] } } }",
             "{ '$sort': { 'calculatedAvg': -1 } }",
             "{ '$limit': 3 }",
             "{ '$project': { '_id': 1, 'name': 1, 'averageScore': '$calculatedAvg' } }"
     })
-    List<MediaAverageDto> top3FilmsByAverageAndGenre(String genre);
+    List<MediaAverageDto> top3FilmsByAverage(String genre);
 }
