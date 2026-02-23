@@ -91,25 +91,7 @@ public interface FilmsMongoRepository extends MongoRepository<FilmsMongo, String
     })
     List<TrendingMediaDto> topImprovingFilms();
 
-    /*
-// Restituisce i 3 film con punteggio medio più alto, filtrando opzionalmente per genere
-@Aggregation(pipeline = {
-        "{ '$addFields': { 'calculatedAvg': { '$cond': { 'if': { '$gt': ['$numScores', 0] }, 'then': { '$divide': ['$sumScores', '$numScores'] }, 'else': 0 } } } }",
-        "{ '$sort': { 'calculatedAvg': -1 } }",
-        "{ '$limit': 3 }",
-        "{ '$project': { '_id': 1, 'name': 1, 'averageScore': '$calculatedAvg' } }"
-})
-List<MediaAverageDto> top3FilmsByAverage();
-
-@Aggregation(pipeline = {
-        "{ '$addFields': { 'calculatedAvg': { '$cond': { 'if': { '$gt': ['$numScores', 0] }, 'then': { '$divide': ['$sumScores', '$numScores'] }, 'else': 0 } } } }",
-        "{ '$match': { 'genres': ?0 } }",
-        "{ '$sort': { 'calculatedAvg': -1 } }",
-        "{ '$limit': 3 }",
-        "{ '$project': { '_id': 1, 'name': 1, 'averageScore': '$calculatedAvg' } }"
-})
-List<MediaAverageDto> top3FilmsByAverageAndGenre(String genre);*/
-
+    // Restituisce i 3 film con punteggio medio più alto, filtrando opzionalmente per genere
     @Aggregation(pipeline = {
             "{ '$addFields': { 'calculatedAvg': { '$cond': { 'if': { '$gt': ['$numScores', 0] }, " +
                     "'then': { '$divide': ['$sumScores', '$numScores'] }, 'else': 0 } } } }",

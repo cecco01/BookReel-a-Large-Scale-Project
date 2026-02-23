@@ -35,60 +35,6 @@ public class RecommendationService {
         this.neo4jClient = neo4jClient;
     }
 
-    /*
-    public List<UserIdUsernameDtoSimilarity> getUsersWithSimilarTastes(String userId) {
-        userNeo4jRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
-        try {
-            userNeo4jRepository.dropGraph("myGraph");
-        } catch (Exception ignored) {
-        }
-
-        neo4jClient.query("""
-                        CALL gds.graph.project(
-                          'myGraph',
-                          'User',
-                          {
-                            FOLLOW: {
-                              type: 'FOLLOW',
-                              orientation: 'NATURAL'
-                            }
-                          }
-                        )
-                        YIELD graphName
-                        RETURN graphName
-                        """)
-                .run();
-
-        List<UserIdUsernameDtoSimilarity> users = neo4jClient.query("""
-                            CALL gds.nodeSimilarity.stream('myGraph')
-                            YIELD node1, node2, similarity
-                            WITH gds.util.asNode(node1) AS user1,
-                                 gds.util.asNode(node2) AS user2,
-                                 similarity
-                            WHERE user1.id = $userId AND user1.id <> user2.id
-                            RETURN user2.id AS id,
-                                   user2.username AS username,
-                                   similarity AS similarity
-                            ORDER BY similarity DESC
-                            LIMIT 10
-                        """)
-                .bind(userId).to("userId")
-                .fetch()
-                .all()
-                .stream()
-                .map(record -> new UserIdUsernameDtoSimilarity(
-                        (String) record.get("id"),
-                        (String) record.get("username"),
-                        ((Number) record.get("similarity")).doubleValue()
-                ))
-                .toList();
-
-
-        userNeo4jRepository.dropGraph("myGraph");
-
-        return users;
-    }
-    */
     public List<UserIdUsernameDtoSimilarity> getUsersWithSimilarTastes(String userId) {
         userNeo4jRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
         try {
@@ -147,19 +93,6 @@ public class RecommendationService {
         return userNeo4jRepository.findPopularMediaAmongFollows(mediaType.toString(), userId);
     }
 
-    /*
-     public List<MediaAverageDto> getTop3Media(MediaType mediaType, String genre) {
-         if (mediaType == MediaType.FILMS) {
-             return genre == null
-                     ? FilmsMongoRepository.top3FilmsByAverage()
-                     : FilmsMongoRepository.top3FilmsByAverageAndGenre(genre);
-         } else {
-             return genre == null
-                     ? BooksMongoRepository.top3BooksByAverage()
-                     : BooksMongoRepository.top3BooksByAverageAndGenre(genre);
-         }
-     }
-     */
     public List<MediaAverageDto> getTop3Media(MediaType mediaType, String genre) {
         if (mediaType == MediaType.FILMS) {
             return FilmsMongoRepository.top3FilmsByAverage(genre);

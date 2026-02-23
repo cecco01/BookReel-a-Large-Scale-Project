@@ -90,25 +90,7 @@ public interface BooksMongoRepository extends MongoRepository<BooksMongo, String
     })
     List<TrendingMediaDto> topImprovingBooks();
 
-/*
     // Restituisce i 3 libri con punteggio medio più alto, filtrando opzionalmente per genere
-    @Aggregation(pipeline = {
-            "{ '$addFields': { 'calculatedAvg': { '$cond': { 'if': { '$gt': ['$numScores', 0] }, 'then': { '$divide': ['$sumScores', '$numScores'] }, 'else': 0 } } } }",
-            "{ '$sort': { 'calculatedAvg': -1 } }",
-            "{ '$limit': 3 }",
-            "{ '$project': { '_id': 1, 'name': 1, 'averageScore': '$calculatedAvg' } }"
-    })
-    List<MediaAverageDto> top3BooksByAverage();
-
-    @Aggregation(pipeline = {
-            "{ '$addFields': { 'calculatedAvg': { '$cond': { 'if': { '$gt': ['$numScores', 0] }, 'then': { '$divide': ['$sumScores', '$numScores'] }, 'else': 0 } } } }",
-            "{ '$match': { 'genres': ?0 } }",
-            "{ '$sort': { 'calculatedAvg': -1 } }",
-            "{ '$limit': 3 }",
-            "{ '$project': { '_id': 1, 'name': 1, 'averageScore': '$calculatedAvg' } }"
-    })
-    List<MediaAverageDto> top3BooksByAverageAndGenre(String genre);*/
-
     @Aggregation(pipeline = {
             "{ '$addFields': { 'calculatedAvg': { '$cond': { 'if': { '$gt': ['$numScores', 0] }, " +
                     "'then': { '$divide': ['$sumScores', '$numScores'] }, 'else': 0 } } } }",
